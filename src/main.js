@@ -9,7 +9,7 @@ import {createEventEditTemplate} from './view/event-edit.js';
 
 const EVENT_COUNT = 3;
 
-const render = (container, template, place) => {
+const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
 };
 
@@ -19,17 +19,17 @@ const siteFilterElement = document.querySelector('.trip-controls__filters');
 const tripEventsElement = document.querySelector('.trip-events');
 
 render(tripMainElement, createTripInfoTemplate(), 'afterbegin');
-render(siteMenuElement, createSiteMenuTemplate(), 'beforeend');
-render(siteFilterElement, createFilterTemplate(), 'beforeend');
-render(tripEventsElement, createSortTemplate(), 'beforeend');
-render(tripEventsElement, createEventsListTemplate(), 'beforeend');
+render(siteMenuElement, createSiteMenuTemplate());
+render(siteFilterElement, createFilterTemplate());
+render(tripEventsElement, createSortTemplate());
+render(tripEventsElement, createEventsListTemplate());
 
 const eventsList = document.querySelector('.trip-events__list');
 const tripInfoElement = document.querySelector('.trip-main__trip-info');
 
 for (let i = 0; i < EVENT_COUNT; i++) {
-  render(eventsList, createEventTemplate(), 'beforeend');
+  render(eventsList, createEventTemplate());
 }
 
-render(tripInfoElement, createTotalPriceTemplate(), 'beforeend');
+render(tripInfoElement, createTotalPriceTemplate());
 render(eventsList, createEventEditTemplate(), 'afterbegin');
