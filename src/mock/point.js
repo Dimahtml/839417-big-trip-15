@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import {generateOffers} from './offer';
+import {generateDestination} from './destination';
 
 // Функция из интернета по генерации случайного числа из диапазона
 // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
@@ -31,20 +33,12 @@ const generateDate = () => {
   };
 };
 
-const generateDestination = () => {
-  const destinations = [
-    'Geneva', 'Amsterdam', 'Chamonix', 'Paris', 'Praga', 'Munchen', 'Paris', 'London', 'Rome',
-  ];
-
-  const randomIndex = getRandomInteger(0, destinations.length - 1);
-
-  return destinations[randomIndex];
-};
-
 const generateBasePrice = () => getRandomInteger(1, 50) * 10;
 
 export const generatePoint = () => {
   const {dateFrom, dateTo} = generateDate();
+  const {offers} = generateOffers();
+  const type = generateType();
 
   return {
     basePrice: generateBasePrice(),
@@ -53,16 +47,7 @@ export const generatePoint = () => {
     destination: generateDestination(),
     id: 0,
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    offers: [
-      {
-        title: 'Choose meal',
-        price: 180,
-      },
-      {
-        title: 'Upgrade to comfort class',
-        price: 50,
-      },
-    ],
-    type: generateType(),
+    offers,
+    type,
   };
 };

@@ -7,6 +7,8 @@ import {createEventTemplate} from './view/event.js';
 import {createTotalPriceTemplate} from './view/total-price.js';
 import {createEventEditTemplate} from './view/event-edit.js';
 
+import {generatePoint} from './mock/point.js';
+
 const EVENT_COUNT = 3;
 
 const render = (container, template, place = 'beforeend') => {
@@ -33,3 +35,5 @@ for (let i = 0; i < EVENT_COUNT; i++) {
 
 render(tripInfoElement, createTotalPriceTemplate());
 render(eventsList, createEventEditTemplate(), 'afterbegin');
+
+console.log(generatePoint());
