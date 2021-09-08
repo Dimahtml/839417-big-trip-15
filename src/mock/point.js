@@ -19,15 +19,11 @@ const generateType = () => {
   return types[randomIndex];
 };
 
-export const generateDate = () => {
+const generateDate = () => {
   const maxMinutesGap = 14400;
   const minutesGap = getRandomInteger(-maxMinutesGap, maxMinutesGap);
   const dateFrom = dayjs().add(minutesGap, 'minute');
   const dateTo = dateFrom.add(30, 'minute');
-
-  // console.log(dateFrom.format('MMM DD HH:mm'));
-  // console.log(dateTo.format('MMM/DD/HH/mm'));
-  // console.log(dateTo.toDate());
 
   return {
     dateFrom: dateFrom.toDate(),
@@ -35,16 +31,28 @@ export const generateDate = () => {
   };
 };
 
+const generateDestination = () => {
+  const destinations = [
+    'Geneva', 'Amsterdam', 'Chamonix', 'Paris', 'Praga', 'Munchen', 'Paris', 'London', 'Rome',
+  ];
+
+  const randomIndex = getRandomInteger(0, destinations.length - 1);
+
+  return destinations[randomIndex];
+};
+
+const generateBasePrice = () => getRandomInteger(1, 50) * 10;
+
 export const generatePoint = () => {
   const {dateFrom, dateTo} = generateDate();
 
   return {
-    basePrice: 1100,
+    basePrice: generateBasePrice(),
     dateFrom,
     dateTo,
-    destination: 'Destination',
+    destination: generateDestination(),
     id: 0,
-    isFavorite: false,
+    isFavorite: Boolean(getRandomInteger(0, 1)),
     offers: [
       {
         title: 'Choose meal',
