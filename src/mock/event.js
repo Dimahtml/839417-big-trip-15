@@ -35,7 +35,7 @@ const generateDate = () => {
 
 const generateBasePrice = () => getRandomInteger(1, 50) * 10;
 
-export const generatePoint = () => {
+export const generateEvent = () => {
   const {dateFrom, dateTo} = generateDate();
   const {offers} = generateOffers();
   const type = generateType();
