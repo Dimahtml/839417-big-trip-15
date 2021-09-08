@@ -36,3 +36,5 @@ for (let i = 0; i < EVENT_COUNT; i++) {
 
 render(tripInfoElement, createTotalPriceTemplate());
 render(eventsList, createEventEditTemplate(), 'afterbegin');
+
+console.log(events);
