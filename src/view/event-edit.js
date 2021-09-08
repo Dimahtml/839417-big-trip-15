@@ -39,8 +39,17 @@ const createEventOfferSelector = (event = {}) => {
     </div>`).join('');
 };
 
+const createEventSectionOffers = (event) => (
+  `<section class="event__section  event__section--offers">
+    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+    <div class="event__available-offers">
+      ${createEventOfferSelector(event)}
+    </div>
+  </section>`
+);
+
 export const createEventEditTemplate = (event = {}) => {
-  const {type, destination, dateFrom, dateTo, basePrice} = event;
+  const {type, destination, dateFrom, dateTo, basePrice, offers} = event;
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -142,12 +151,7 @@ export const createEventEditTemplate = (event = {}) => {
       </button>
     </header>
     <section class="event__details">
-      <section class="event__section  event__section--offers">
-        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-        <div class="event__available-offers">
-          ${createEventOfferSelector(event)}
-        </div>
-      </section>
+      ${offers.length > 0 ? createEventSectionOffers(event) : ''}
 
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
