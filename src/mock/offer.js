@@ -9,7 +9,7 @@ const getRandomInteger = (a = 0, b = 1) => {
 
 const generateOffer = () => {
   const titles = [
-    'Add luggage', 'Switch to comfort class', 'Add meal', 'Choose seats', 'Travel by train',
+    'Add luggage', 'Switch to comfort', 'Add meal', 'Choose seats', 'Travel by train',
   ];
 
   const prices = [

@@ -1,13 +1,31 @@
 import dayjs from 'dayjs';
 
+const createEventOffer = (event = {}) => {
+  const {offers} = event;
+
+  return offers.map((offer) =>
+    `<li class="event__offer">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </li>`).join('');
+};
+
+const createEventFavoriteIcon = (isFavorite = false) => (
+  `<button class="event__favorite-btn ${isFavorite === true ? 'event__favorite-btn--active' : ''}" type="button">
+    <span class="visually-hidden">Add to favorite</span>
+    <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+      <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+    </svg>
+  </button>`
+);
+
 export const createEventTemplate = (event) => {
-  const {dateFrom, dateTo, basePrice, offers} = event;
+  const {dateFrom, dateTo, basePrice} = event;
   const month = dayjs(dateFrom).format('MMM DD');
   const startTime = dayjs(dateFrom).format('HH:mm');
   const endTime = dayjs(dateTo).format('HH:mm');
   const diff = dayjs(dateTo).diff(dateFrom, 'minute');
-
-  console.log(offers);
 
   return `<li class="trip-events__item">
     <div class="event">
@@ -29,22 +47,12 @@ export const createEventTemplate = (event) => {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        <li class="event__offer">
-          <span class="event__offer-title">${offers[0].title}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">20</span>
-        </li>
+        ${createEventOffer(event)}
       </ul>
-      <button class="event__favorite-btn event__favorite-btn--active" type="button">
-        <span class="visually-hidden">Add to favorite</span>
-        <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
-          <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
-        </svg>
-      </button>
+      ${createEventFavoriteIcon(event.isFavorite)}
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>
     </div>
   </li>`;
 };
-
