@@ -10,7 +10,7 @@ import {generateEvent} from './mock/event.js';
 
 const EVENT_COUNT = 3;
 
-const events = new Array(EVENT_COUNT).fill().map(generateEvent);
+const events = new Array(EVENT_COUNT + 1).fill().map(generateEvent);
 
 const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
@@ -30,11 +30,9 @@ render(tripEventsElement, createEventsListTemplate());
 const eventsList = document.querySelector('.trip-events__list');
 const tripInfoElement = document.querySelector('.trip-main__trip-info');
 
-for (let i = 0; i < EVENT_COUNT; i++) {
+for (let i = 1; i < EVENT_COUNT + 1; i++) {
   render(eventsList, createEventTemplate(events[i]));
 }
 
 render(tripInfoElement, createTotalPriceTemplate());
-render(eventsList, createEventEditTemplate(), 'afterbegin');
-
-console.log(events);
+render(eventsList, createEventEditTemplate(events[0]), 'afterbegin');
