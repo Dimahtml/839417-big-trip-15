@@ -1,3 +1,5 @@
+// Этот компонент является дополнительным заданием.
+
 export const createTripInfoTemplate = () => (
   `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">

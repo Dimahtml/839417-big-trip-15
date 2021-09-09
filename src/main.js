@@ -1,44 +1,70 @@
-import {createTripInfoTemplate} from './view/trip-info.js';
-import {createSiteMenuTemplate} from './view/site-menu.js';
-import {createFilterTemplate} from './view/filter.js';
-import {createSortTemplate} from './view/sort.js';
-import {createEventsListTemplate} from './view/events-list-container.js';
-import {createEventTemplate} from './view/event.js';
-import {createTotalPriceTemplate} from './view/total-price.js';
-import {createEventEditTemplate} from './view/event-edit.js';
-import {createNoEventTemplate} from './view/no-event.js';
+import SiteMenuView from './view/site-menu.js';
+import FilterView from './view/filter.js';
+import SortView from './view/sort.js';
+import EventsContainer from './view/events-list-container.js';
+import EventView from './view/event.js';
+import EventEditView from './view/event-edit';
+import NoEventView from './view/no-event.js';
 import {generateEvent} from './mock/event.js';
+import {render, RenderPosition} from './utils.js';
 
 const EVENT_COUNT = 10;
 
 const events = new Array(EVENT_COUNT).fill().map(generateEvent);
 
-const render = (container, template, place = 'beforeend') => {
-  container.insertAdjacentHTML(place, template);
-};
-
-const tripMainElement = document.querySelector('.trip-main');
 const siteMenuElement = document.querySelector('.trip-controls__navigation');
 const siteFilterElement = document.querySelector('.trip-controls__filters');
 const tripEventsElement = document.querySelector('.trip-events');
 
-render(siteMenuElement, createSiteMenuTemplate());
-render(siteFilterElement, createFilterTemplate());
+const renderEvent = (eventListElement, event) => {
+  const eventComponent = new EventView(event);
+  const eventEditComponent = new EventEditView(event);
 
-if (events.length === 0) {
-  render(tripEventsElement, createNoEventTemplate());
-} else {
-  render(tripMainElement, createTripInfoTemplate(), 'afterbegin');
-  render(tripEventsElement, createSortTemplate());
-  render(tripEventsElement, createEventsListTemplate());
+  const openPoint = () => {
+    eventListElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
 
+  const closePoint = () => {
+    eventListElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
+
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      closePoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
+  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    openPoint();
+    document.addEventListener('keydown', onEscKeyDown);
+  });
+
+  eventEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    closePoint();
+    document.removeEventListener('keydown', onEscKeyDown);
+  });
+
+  eventEditComponent.getElement().addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    closePoint();
+    document.removeEventListener('keydown', onEscKeyDown);
+  });
+
+  render(eventListElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
+render(siteMenuElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
+render(siteFilterElement, new FilterView().getElement(), RenderPosition.BEFOREEND);
+
+if (events.length > 0) {
+  render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+  render(tripEventsElement, new EventsContainer().getElement(), RenderPosition.BEFOREEND);
   const eventsList = document.querySelector('.trip-events__list');
-  const tripInfoElement = document.querySelector('.trip-main__trip-info');
-
-  for (let i = 1; i < EVENT_COUNT; i++) {
-    render(eventsList, createEventTemplate(events[i]));
+  for (let i = 0; i < EVENT_COUNT; i++) {
+    renderEvent(eventsList, events[i]);
   }
-
-  render(tripInfoElement, createTotalPriceTemplate());
-  render(eventsList, createEventEditTemplate(events[0]), 'afterbegin');
+} else {
+  render(tripEventsElement, new NoEventView().getElement(), RenderPosition.BEFOREEND);
 }
