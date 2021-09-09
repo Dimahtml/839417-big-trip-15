@@ -28,18 +28,32 @@ const renderEvent = (eventListElement, event) => {
     eventListElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
   };
 
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      closePoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
   eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
     openPoint();
+    document.addEventListener('keydown', onEscKeyDown);
   });
 
-  eventEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', (evt) => {
+  eventEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    closePoint();
+    document.removeEventListener('keydown', onEscKeyDown);
+  });
+
+  eventEditComponent.getElement().querySelector('.event__save-btn').addEventListener('submit', (evt) => {
     evt.preventDefault();
     closePoint();
+    document.removeEventListener('keydown', onEscKeyDown);
   });
 
   render(eventListElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
 };
-
 
 render(siteMenuElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
 render(siteFilterElement, new FilterView().getElement(), RenderPosition.BEFOREEND);
