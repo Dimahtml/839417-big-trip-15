@@ -2,8 +2,9 @@ import SiteMenuView from './view/site-menu.js';
 import FilterView from './view/filter.js';
 import SortView from './view/sort.js';
 import EventsContainer from './view/events-list-container.js';
-import {createEventTemplate} from './view/event.js';
-import {createEventEditTemplate} from './view/event-edit.js';
+import EventView from './view/event.js';
+import EventEditView from './view/event-edit';
+// import {createEventEditTemplate} from './view/event-edit.js';
 import NoEventView from './view/no-event.js';
 import {generateEvent} from './mock/event.js';
 import {renderTemplate, renderElement, RenderPosition} from './utils.js';
@@ -28,8 +29,8 @@ if (events.length === 0) {
   const eventsList = document.querySelector('.trip-events__list');
 
   for (let i = 1; i < EVENT_COUNT; i++) {
-    renderTemplate(eventsList, createEventTemplate(events[i]));
+    renderElement(eventsList, new EventView(events[i]).getElement(), RenderPosition.BEFOREEND);
   }
 
-  renderTemplate(eventsList, createEventEditTemplate(events[0]), 'afterbegin');
+  renderElement(eventsList, new EventEditView(events[0]).getElement(), RenderPosition.AFTERBEGIN);
 }
