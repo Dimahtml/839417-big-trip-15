@@ -20,6 +20,23 @@ const renderEvent = (eventListElement, event) => {
   const eventComponent = new EventView(event);
   const eventEditComponent = new EventEditView(event);
 
+  const openPoint = () => {
+    eventListElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+  };
+
+  const closePoint = () => {
+    eventListElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+  };
+
+  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    openPoint();
+  });
+
+  eventEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', (evt) => {
+    evt.preventDefault();
+    closePoint();
+  });
+
   render(eventListElement, eventComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
@@ -36,7 +53,6 @@ if (events.length === 0) {
   const eventsList = document.querySelector('.trip-events__list');
 
   for (let i = 1; i < EVENT_COUNT; i++) {
-    // render(eventsList, new EventView(events[i]).getElement(), RenderPosition.BEFOREEND);
     renderEvent(eventsList, events[i]);
   }
 
