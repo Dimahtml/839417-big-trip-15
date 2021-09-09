@@ -46,7 +46,7 @@ const renderEvent = (eventListElement, event) => {
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  eventEditComponent.getElement().querySelector('.event__save-btn').addEventListener('submit', (evt) => {
+  eventEditComponent.getElement().addEventListener('submit', (evt) => {
     evt.preventDefault();
     closePoint();
     document.removeEventListener('keydown', onEscKeyDown);
@@ -58,17 +58,13 @@ const renderEvent = (eventListElement, event) => {
 render(siteMenuElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
 render(siteFilterElement, new FilterView().getElement(), RenderPosition.BEFOREEND);
 
-if (events.length === 0) {
-  render(tripEventsElement, new NoEventView().getElement(), RenderPosition.BEFOREEND);
-} else {
+if (events.length > 0) {
   render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
   render(tripEventsElement, new EventsContainer().getElement(), RenderPosition.BEFOREEND);
-
   const eventsList = document.querySelector('.trip-events__list');
-
-  for (let i = 1; i < EVENT_COUNT; i++) {
+  for (let i = 0; i < EVENT_COUNT; i++) {
     renderEvent(eventsList, events[i]);
   }
-
-  render(eventsList, new EventEditView(events[0]).getElement(), RenderPosition.AFTERBEGIN);
+} else {
+  render(tripEventsElement, new NoEventView().getElement(), RenderPosition.BEFOREEND);
 }
