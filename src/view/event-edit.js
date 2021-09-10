@@ -137,6 +137,7 @@ export default class EventEdit extends AbstractView {
     // Чтобы такого не происходило, нужно насильно
     // привязать обработчик к контексту с помощью bind
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -149,6 +150,11 @@ export default class EventEdit extends AbstractView {
     this._callback.formSubmit();
   }
 
+  _closeButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closeButtonClick();
+  }
+
   setFormSubmitHandler(callback) {
     // Мы могли бы сразу передать callback в addEventListener,
     // но тогда бы для удаления обработчика в будущем,
@@ -159,5 +165,10 @@ export default class EventEdit extends AbstractView {
     this._callback.formSubmit = callback;
     // 2. В addEventListener передадим абстрактный обработчик
     this.getElement().addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setCloseButtonClickHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeButtonClick);
   }
 }
