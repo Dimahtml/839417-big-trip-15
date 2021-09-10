@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import {generateOffers} from './offer';
 import {generateDestination} from './destination';
-import {getRandomInteger} from '../utils';
+import {getRandomInteger} from '../utils/common.js';
 
 const generateType = () => {
   const types = [

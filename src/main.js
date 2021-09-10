@@ -6,7 +6,7 @@ import EventView from './view/event.js';
 import EventEditView from './view/event-edit';
 import NoEventView from './view/no-event.js';
 import {generateEvent} from './mock/event.js';
-import {render, RenderPosition} from './utils.js';
+import {render, RenderPosition} from './utils/render.js';
 
 const EVENT_COUNT = 10;
 
@@ -42,7 +42,6 @@ const renderEvent = (eventListElement, event) => {
   });
 
   eventEditComponent.setCloseButtonClickHandler(() => {
-    console.log('hello')
     closePoint();
     document.removeEventListener('keydown', onEscKeyDown);
   });
