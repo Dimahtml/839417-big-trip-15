@@ -46,8 +46,7 @@ const renderEvent = (eventListElement, event) => {
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  eventEditComponent.getElement().addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  eventEditComponent.setFormSubmitHandler(() => {
     closePoint();
     document.removeEventListener('keydown', onEscKeyDown);
   });
