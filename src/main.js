@@ -36,7 +36,7 @@ const renderEvent = (eventListElement, event) => {
     }
   };
 
-  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  eventComponent.setOpenButtonClickHandler(() => {
     openPoint();
     document.addEventListener('keydown', onEscKeyDown);
   });
