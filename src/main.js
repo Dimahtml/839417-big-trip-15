@@ -42,6 +42,7 @@ const renderEvent = (eventListElement, event) => {
   });
 
   eventEditComponent.setCloseButtonClickHandler(() => {
+    console.log('hello')
     closePoint();
     document.removeEventListener('keydown', onEscKeyDown);
   });
