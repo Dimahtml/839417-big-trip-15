@@ -6,7 +6,7 @@ import EventView from './view/event.js';
 import EventEditView from './view/event-edit';
 import NoEventView from './view/no-event.js';
 import {generateEvent} from './mock/event.js';
-import {render, RenderPosition} from './utils.js';
+import {render, RenderPosition} from './utils/render.js';
 
 const EVENT_COUNT = 10;
 
@@ -36,18 +36,17 @@ const renderEvent = (eventListElement, event) => {
     }
   };
 
-  eventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  eventComponent.setOpenButtonClickHandler(() => {
     openPoint();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  eventEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  eventEditComponent.setCloseButtonClickHandler(() => {
     closePoint();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  eventEditComponent.getElement().addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  eventEditComponent.setFormSubmitHandler(() => {
     closePoint();
     document.removeEventListener('keydown', onEscKeyDown);
   });

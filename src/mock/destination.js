@@ -1,4 +1,4 @@
-import {getRandomInteger} from '../utils';
+import {getRandomInteger} from '../utils/common.js';
 
 const generateDestinationDescription = () => {
   const descLength = getRandomInteger(1, 5);

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {createElement} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const createEventOffer = (event = {}) => {
   const {offers} = event;
@@ -58,25 +58,25 @@ const createEventTemplate = (event) => {
   </li>`;
 };
 
-export default class Event {
+export default class Event extends AbstractView {
   constructor(event) {
+    super();
     this._event = event;
-    this._element = null;
+
+    this._openButtonClickHandler = this._openButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createEventTemplate(this._event);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _openButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.openButtonClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setOpenButtonClickHandler(callback) {
+    this._callback.openButtonClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._openButtonClickHandler);
   }
 }

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import {Types} from '../const';
-import {createElement} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const createOfferName = (offer = {}) => {
   let offerName = '';
@@ -126,25 +126,49 @@ const createEventEditTemplate = (event = {}) => {
   </form>`;
 };
 
-export default class EventEdit {
+export default class EventEdit extends AbstractView {
   constructor(event) {
+    super();
     this._event = event;
-    this._element = null;
+
+    // 4. Теперь обработчик - метод класса, а не стрелочная функция.
+    // Поэтому при передаче в addEventListener он теряет контекст (this),
+    // а с контекстом - доступ к свойствам и методам.
+    // Чтобы такого не происходило, нужно насильно
+    // привязать обработчик к контексту с помощью bind
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createEventEditTemplate(this._event);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    // 3. А внутри абстрактного обработчика вызовем колбэк
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  _closeButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closeButtonClick();
+  }
+
+  setFormSubmitHandler(callback) {
+    // Мы могли бы сразу передать callback в addEventListener,
+    // но тогда бы для удаления обработчика в будущем,
+    // нам нужно было бы производить это снаружи, где-то там,
+    // где мы вызывали setFormSubmitHandler, что не всегда удобно
+
+    // 1. Поэтому колбэк мы запишем во внутреннее свойство
+    this._callback.formSubmit = callback;
+    // 2. В addEventListener передадим абстрактный обработчик
+    this.getElement().addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setCloseButtonClickHandler(callback) {
+    this._callback.closeButtonClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeButtonClickHandler);
   }
 }
