@@ -4,6 +4,7 @@ import SortView from '../view/sort.js';
 import EventsListView from '../view/events-list.js';
 import NoEventView from '../view/no-event.js';
 import EventPresenter from './event.js';
+import {updateItem} from '../utils/common.js';
 import {render, RenderPosition} from '../utils/render.js';
 
 export default class Trip {
@@ -16,12 +17,19 @@ export default class Trip {
     this._eventsListComponent = new EventsListView();
     this._sortComponent = new SortView();
     this._noEventComponent = new NoEventView();
+
+    this._handleEventChange = this._handleEventChange.bind(this);
   }
 
   init(tripEvents) {
     this._tripEvents = tripEvents.slice();
 
     this._renderTrip();
+  }
+
+  _handleEventChange(updatedEvent) {
+    this._tripEvents = updateItem(this._tripEvents, updatedEvent);
+    this._eventPresenter.get(updatedEvent.id).init(updatedEvent);
   }
 
   _renderSort() {
