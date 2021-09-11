@@ -5,7 +5,7 @@ import EventsListView from '../view/events-list.js';
 import EventView from '../view/event.js';
 import EventEditView from '../view/event-edit.js';
 import NoEventView from '../view/no-event.js';
-import {render, RenderPosition} from '../utils/render.js';
+import {render, RenderPosition, replace} from '../utils/render.js';
 
 export default class Trip {
   constructor(tripContainer) {
@@ -32,34 +32,34 @@ export default class Trip {
     const eventComponent = new EventView(event);
     const eventEditComponent = new EventEditView(event);
 
-    const openPoint = () => {
-      eventListElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+    const rollUpPoint = () => {
+      replace(eventEditComponent, eventComponent);
     };
 
-    const closePoint = () => {
-      eventListElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+    const rollDownPoint = () => {
+      replace(eventComponent, eventEditComponent);
     };
 
     const onEscKeyDown = (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
-        closePoint();
+        rollDownPoint();
         document.removeEventListener('keydown', onEscKeyDown);
       }
     };
 
     eventComponent.setOpenButtonClickHandler(() => {
-      openPoint();
+      rollUpPoint();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
     eventEditComponent.setCloseButtonClickHandler(() => {
-      closePoint();
+      rollDownPoint();
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
     eventEditComponent.setFormSubmitHandler(() => {
-      closePoint();
+      rollDownPoint();
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
@@ -74,7 +74,6 @@ export default class Trip {
     if (this._tripEvents.length > 0) {
       this._renderSort();
       render(this._tripContainer, this._eventsListComponent, RenderPosition.BEFOREEND);
-      // const eventsList = document.querySelector('.trip-events__list');
       this._tripEvents.forEach((event) =>  this._renderEvent(event));
     } else {
       this._renderNoEvents();
