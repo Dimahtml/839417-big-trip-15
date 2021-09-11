@@ -37,7 +37,7 @@ export default class Trip {
   }
 
   _renderEvent(event) {
-    const eventPresenter = new EventPresenter(this._eventsListComponent);
+    const eventPresenter = new EventPresenter(this._eventsListComponent, this._handleEventChange);
     eventPresenter.init(event);
     this._eventPresenter.set(event.id, eventPresenter);
   }

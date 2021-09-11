@@ -147,7 +147,7 @@ export default class EventEdit extends AbstractView {
   _formSubmitHandler(evt) {
     evt.preventDefault();
     // 3. А внутри абстрактного обработчика вызовем колбэк
-    this._callback.formSubmit();
+    this._callback.formSubmit(this._event);
   }
 
   _closeButtonClickHandler(evt) {

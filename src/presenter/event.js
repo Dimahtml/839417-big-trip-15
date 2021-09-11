@@ -3,8 +3,9 @@ import EventEditView from '../view/event-edit.js';
 import {render, RenderPosition, replace, remove} from '../utils/render.js';
 
 export default class Event {
-  constructor(eventsListContainer) {
+  constructor(eventsListContainer, changeData) {
     this._eventsListContainer = eventsListContainer;
+    this._changeData = changeData;
 
     this._eventComponent = null;
     this._eventEditComponent = null;
@@ -13,6 +14,7 @@ export default class Event {
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   init(event) {
@@ -25,6 +27,7 @@ export default class Event {
     this._eventEditComponent = new EventEditView(event);
 
     this._eventComponent.setOpenButtonClickHandler(this._handleOpenButtonClick);
+    this._eventComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._eventEditComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
 
@@ -36,7 +39,7 @@ export default class Event {
     // Проверка на наличие в DOM необходима,
     // чтобы не пытаться заменить то, что не было отрисовано
     if (this._eventsListContainer.getElement().contains(prevEventComponent.getElement())) {
-      replace(this._taskComponent, prevEventComponent);
+      replace(this._eventComponent, prevEventComponent);
     }
 
     if (this._eventsListContainer.getElement().contains(prevEventEditComponent.getElement())) {
@@ -77,7 +80,20 @@ export default class Event {
     this._rollDownPoint();
   }
 
-  _handleFormSubmit() {
+  _handleFavoriteClick() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._event,
+        {
+          isFavorite: !this._event.isFavorite,
+        },
+      ),
+    );
+  }
+
+  _handleFormSubmit(event) {
+    this._changeData(event);
     this._rollDownPoint();
   }
 }
