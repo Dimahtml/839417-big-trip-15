@@ -2,10 +2,9 @@ import SiteMenuView from '../view/site-menu.js';
 import FilterView from '../view/filter.js';
 import SortView from '../view/sort.js';
 import EventsListView from '../view/events-list.js';
-import EventView from '../view/event.js';
-import EventEditView from '../view/event-edit.js';
 import NoEventView from '../view/no-event.js';
-import {render, RenderPosition, replace} from '../utils/render.js';
+import EventPresenter from './event.js';
+import {render, RenderPosition} from '../utils/render.js';
 
 export default class Trip {
   constructor(tripContainer) {
@@ -29,41 +28,25 @@ export default class Trip {
   }
 
   _renderEvent(event) {
-    const eventComponent = new EventView(event);
-    const eventEditComponent = new EventEditView(event);
+    // eventComponent.setOpenButtonClickHandler(() => {
+    //   rollUpPoint();
+    //   document.addEventListener('keydown', onEscKeyDown);
+    // });
 
-    const rollUpPoint = () => {
-      replace(eventEditComponent, eventComponent);
-    };
+    // eventEditComponent.setCloseButtonClickHandler(() => {
+    //   rollDownPoint();
+    //   document.removeEventListener('keydown', onEscKeyDown);
+    // });
 
-    const rollDownPoint = () => {
-      replace(eventComponent, eventEditComponent);
-    };
+    // eventEditComponent.setFormSubmitHandler(() => {
+    //   rollDownPoint();
+    //   document.removeEventListener('keydown', onEscKeyDown);
+    // });
 
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        rollDownPoint();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
+    // render(this._eventsListComponent, eventComponent.getElement(), RenderPosition.BEFOREEND);
 
-    eventComponent.setOpenButtonClickHandler(() => {
-      rollUpPoint();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-
-    eventEditComponent.setCloseButtonClickHandler(() => {
-      rollDownPoint();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    eventEditComponent.setFormSubmitHandler(() => {
-      rollDownPoint();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    render(this._eventsListComponent, eventComponent.getElement(), RenderPosition.BEFOREEND);
+    const eventPresenter = new EventPresenter(this._eventsListComponent);
+    eventPresenter.init(event);
   }
 
   _renderNoEvents() {
