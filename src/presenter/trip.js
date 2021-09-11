@@ -28,23 +28,6 @@ export default class Trip {
   }
 
   _renderEvent(event) {
-    // eventComponent.setOpenButtonClickHandler(() => {
-    //   rollUpPoint();
-    //   document.addEventListener('keydown', onEscKeyDown);
-    // });
-
-    // eventEditComponent.setCloseButtonClickHandler(() => {
-    //   rollDownPoint();
-    //   document.removeEventListener('keydown', onEscKeyDown);
-    // });
-
-    // eventEditComponent.setFormSubmitHandler(() => {
-    //   rollDownPoint();
-    //   document.removeEventListener('keydown', onEscKeyDown);
-    // });
-
-    // render(this._eventsListComponent, eventComponent.getElement(), RenderPosition.BEFOREEND);
-
     const eventPresenter = new EventPresenter(this._eventsListComponent);
     eventPresenter.init(event);
   }

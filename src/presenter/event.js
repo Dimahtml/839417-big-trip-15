@@ -11,7 +11,7 @@ export default class Event {
 
     this._handleOpenButtonClick = this._handleOpenButtonClick.bind(this);
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
-    // this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
@@ -21,21 +21,9 @@ export default class Event {
     this._eventComponent = new EventView(event);
     this._eventEditComponent = new EventEditView(event);
 
-    // this._eventComponent.setOpenButtonClickHandler(() => {
-    //   this._rollUpPoint();
-    //   document.addEventListener('keydown', this._onEscKeyDown);
-    // });
-
     this._eventComponent.setOpenButtonClickHandler(this._handleOpenButtonClick);
-
-    // this._eventEditComponent.setCloseButtonClickHandler(() => {
-    //   this._rollDownPoint();
-    //   document.removeEventListener('keydown', this._onEscKeyDown);
-    // });
-
     this._eventEditComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
-
-    this._eventEditComponent.setFormSubmitHandler(this._handleCloseButtonClick);
+    this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     render(this._eventsListContainer, this._eventComponent, RenderPosition.BEFOREEND);
   }
@@ -49,14 +37,6 @@ export default class Event {
     replace(this._eventComponent, this._eventEditComponent);
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
-
-  // _onEscKeyDown(evt) {
-  //   if (evt.key === 'Escape' || evt.key === 'Esc') {
-  //     evt.preventDefault();
-  //     this._rollDownPoint();
-  //     document.removeEventListener('keydown', this._onEscKeyDown);
-  //   }
-  // }
 
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
@@ -73,7 +53,7 @@ export default class Event {
     this._rollDownPoint();
   }
 
-  // _handleFormSubmit() {
-  //   this._rollDownPoint();
-  // }
+  _handleFormSubmit() {
+    this._rollDownPoint();
+  }
 }
