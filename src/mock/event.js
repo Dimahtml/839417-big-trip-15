@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import {generateOffers} from './offer';
 import {generateDestination} from './destination';
 import {getRandomInteger} from '../utils/common.js';
+import {nanoid} from 'nanoid';
 
 const generateType = () => {
   const types = [
@@ -34,11 +35,11 @@ export const generateEvent = () => {
   const type = generateType();
 
   return {
+    id: nanoid(),
     basePrice: generateBasePrice(),
     dateFrom,
     dateTo,
     destination: generateDestination(),
-    id: 0,
     isFavorite: Boolean(getRandomInteger(0, 1)),
     offers,
     type,

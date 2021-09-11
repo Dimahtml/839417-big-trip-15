@@ -9,6 +9,7 @@ import {render, RenderPosition} from '../utils/render.js';
 export default class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
+    this._eventPresenter = new Map();
 
     this._siteMenuComponent = new SiteMenuView();
     this._filterComponent = new FilterView();
@@ -30,6 +31,7 @@ export default class Trip {
   _renderEvent(event) {
     const eventPresenter = new EventPresenter(this._eventsListComponent);
     eventPresenter.init(event);
+    this._eventPresenter.set(event.id, eventPresenter);
   }
 
   _renderNoEvents() {
@@ -44,5 +46,10 @@ export default class Trip {
     } else {
       this._renderNoEvents();
     }
+  }
+
+  _clearEventList() {
+    this._eventPresenter.forEach((presenter) => presenter.destroy());
+    this._eventPresenter.clear();
   }
 }
