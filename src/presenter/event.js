@@ -1,6 +1,6 @@
 import EventView from '../view/event.js';
 import EventEditView from '../view/event-edit.js';
-import {render, RenderPosition, replace} from '../utils/render.js';
+import {render, RenderPosition, replace, remove} from '../utils/render.js';
 
 export default class Event {
   constructor(eventsListContainer) {
@@ -18,6 +18,9 @@ export default class Event {
   init(event) {
     this._event = event;
 
+    const prevEventComponent = this._eventComponent;
+    const prevEventEditComponent = this._eventEditComponent;
+
     this._eventComponent = new EventView(event);
     this._eventEditComponent = new EventEditView(event);
 
@@ -25,7 +28,28 @@ export default class Event {
     this._eventEditComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
     this._eventEditComponent.setFormSubmitHandler(this._handleFormSubmit);
 
-    render(this._eventsListContainer, this._eventComponent, RenderPosition.BEFOREEND);
+    if (prevEventComponent === null || prevEventEditComponent === null) {
+      render(this._eventsListContainer, this._eventComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    // Проверка на наличие в DOM необходима,
+    // чтобы не пытаться заменить то, что не было отрисовано
+    if (this._eventsListContainer.getElement().contains(prevEventComponent.getElement())) {
+      replace(this._taskComponent, prevEventComponent);
+    }
+
+    if (this._eventsListContainer.getElement().contains(prevEventEditComponent.getElement())) {
+      replace(this._eventEditComponent, prevEventEditComponent);
+    }
+
+    remove(prevEventComponent);
+    remove(prevEventEditComponent);
+  }
+
+  destroy() {
+    remove(this._eventComponent);
+    remove(this._eventEditComponent);
   }
 
   _rollUpPoint() {
