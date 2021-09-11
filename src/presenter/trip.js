@@ -67,7 +67,7 @@ export default class Trip {
   }
 
   _renderNoEvents() {
-    // Метод для рендеринга заглушки
+    render(this._tripContainer, this._noEventComponent, RenderPosition.BEFOREEND);
   }
 
   _renderTrip() {
