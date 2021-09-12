@@ -42,13 +42,13 @@ export default class Sort extends AbstractView {
   }
 
   _sortTypeChangeHandler(evt) {
-    // if (evt.target.tagName !== 'A') {
-    //   return;
-    // }
+    // ИСПРАВИТЬ ЗДЕСЬ ?????????????
+    if (evt.target.tagName !== 'label') {
+      return;
+    }
 
     evt.preventDefault();
     this._callback.sortTypeChange(evt.target.dataset.sortType);
-    console.log('1asdfasd')
   }
 
   setSortTypeChangeHandler(callback) {
