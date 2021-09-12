@@ -7,10 +7,14 @@ import EventPresenter from './event.js';
 import {updateItem} from '../utils/common.js';
 import {render, RenderPosition} from '../utils/render.js';
 
+import {sortTime, sortPrice} from '../utils/event.js';
+import {SortType} from '../const.js';
+
 export default class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
     this._eventPresenter = new Map();
+    this._currentSortType = SortType.DEFAULT;
 
     this._siteMenuComponent = new SiteMenuView();
     this._filterComponent = new FilterView();
@@ -25,6 +29,7 @@ export default class Trip {
 
   init(tripEvents) {
     this._tripEvents = tripEvents.slice();
+    this._sourcedTripEvents = tripEvents.slice();
 
     this._renderTrip();
   }
@@ -35,13 +40,36 @@ export default class Trip {
 
   _handleEventChange(updatedEvent) {
     this._tripEvents = updateItem(this._tripEvents, updatedEvent);
+    this._sourcedTripEvents = updateItem(this._sourcedTripEvents, updatedEvent);
     this._eventPresenter.get(updatedEvent.id).init(updatedEvent);
   }
 
+  _sortEvents(sortType) {
+    // 2. Этот исходный массив задач необходим,
+    // потому что для сортировки мы будем мутировать
+    // массив в свойстве _boardTasks
+    switch (sortType) {
+      case SortType.TIME:
+        this._boardTasks.sort(sortTime);
+        break;
+      case SortType.PRICE:
+        this._boardTasks.sort(sortPrice);
+        break;
+      default:
+        // 3. А когда пользователь захочет "вернуть всё, как было",
+        // мы просто запишем в _boardTasks исходный массив
+        this._tripEvents = this._sourcedTripEvents.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
   _handleSortTypeChange(sortType) {
-    // - Сортируем задачи
-    // - Очищаем список
-    // - Рендерим список заново
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortEvents(sortType);
   }
 
   _renderSort() {
