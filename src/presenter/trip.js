@@ -45,19 +45,14 @@ export default class Trip {
   }
 
   _sortEvents(sortType) {
-    // 2. Этот исходный массив задач необходим,
-    // потому что для сортировки мы будем мутировать
-    // массив в свойстве _boardTasks
     switch (sortType) {
       case SortType.TIME:
-        this._boardTasks.sort(sortTime);
+        this._tripEvents.sort(sortTime);
         break;
       case SortType.PRICE:
-        this._boardTasks.sort(sortPrice);
+        this._tripEvents.sort(sortPrice);
         break;
       default:
-        // 3. А когда пользователь захочет "вернуть всё, как было",
-        // мы просто запишем в _boardTasks исходный массив
         this._tripEvents = this._sourcedTripEvents.slice();
     }
 
@@ -70,6 +65,8 @@ export default class Trip {
     }
 
     this._sortEvents(sortType);
+    this._clearEventList();
+    this._renderTrip();
   }
 
   _renderSort() {

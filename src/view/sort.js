@@ -42,8 +42,7 @@ export default class Sort extends AbstractView {
   }
 
   _sortTypeChangeHandler(evt) {
-    // ИСПРАВИТЬ ЗДЕСЬ ?????????????
-    if (evt.target.tagName !== 'label') {
+    if (evt.target.tagName !== 'LABEL') {
       return;
     }
 
@@ -54,5 +53,6 @@ export default class Sort extends AbstractView {
   setSortTypeChangeHandler(callback) {
     this._callback.sortTypeChange = callback;
     this.getElement().addEventListener('click', this._sortTypeChangeHandler);
+    this.getElement().querySelector('input').addEventListener('change', this._sortTypeChangeHandler);
   }
 }
