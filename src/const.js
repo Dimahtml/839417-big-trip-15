@@ -10,3 +10,10 @@ export const Types = {
   SIGHTSEEING: 'sightseeing',
   RESTARAUNT: 'restaurant',
 };
+
+export const SortType = {
+  DEFAULT: 'default',
+  TIME: 'time',
+  PRICE: 'price',
+  DISABLED: 'disabled',
+};
