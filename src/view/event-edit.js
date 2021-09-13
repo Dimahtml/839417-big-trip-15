@@ -60,8 +60,35 @@ const createEventTypeItem = (eventTypes) => {
     </div>`).join('');
 };
 
-const createEventEditTemplate = (event = {}) => {
-  const {type, destination, dateFrom, dateTo, basePrice, offers} = event;
+const createPicturesItemTemplate = (event) => {
+  const pictures = event.destination.pictures;
+  console.log(pictures);
+  return pictures.map((picture) =>
+    `<img class="event__photo" src="${picture.src}"
+      alt="${picture}">
+    </img>`).join('');
+};
+
+const createPicturesContainerTemplate = (event) => (
+  `<div class="event__photos-container">
+    <div class="event__photos-tape">
+      ${createPicturesItemTemplate(event)}
+    </div>
+  </div>`
+);
+
+const createEventSectionDestination = (event, isPictures) => (
+  `<section class="event__section  event__section--destination">
+    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${event.destination.description}</p>
+    ${isPictures ? createPicturesContainerTemplate(event) : ''}
+  </section>`
+);
+
+const createEventEditTemplate = (data) => {
+  const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures} = data;
+
+  // console.log(data)
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -74,9 +101,7 @@ const createEventEditTemplate = (event = {}) => {
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
-
             ${createEventTypeItem(Types)}
-
           </fieldset>
         </div>
       </div>
@@ -116,12 +141,8 @@ const createEventEditTemplate = (event = {}) => {
       </button>
     </header>
     <section class="event__details">
-      ${offers.length > 0 ? createEventSectionOffers(event) : ''}
-
-      <section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destination.description}</p>
-      </section>
+      ${isOffers ? createEventSectionOffers(data) : ''}
+      ${isDestination ? createEventSectionDestination(data, isPictures) : ''}
     </section>
   </form>`;
 };
@@ -129,7 +150,8 @@ const createEventEditTemplate = (event = {}) => {
 export default class EventEdit extends AbstractView {
   constructor(event) {
     super();
-    this._event = event;
+    // this._event = event;
+    this._data = EventEdit.parseEventToData(event);
 
     // 4. Теперь обработчик - метод класса, а не стрелочная функция.
     // Поэтому при передаче в addEventListener он теряет контекст (this),
@@ -141,7 +163,7 @@ export default class EventEdit extends AbstractView {
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._event);
+    return createEventEditTemplate(this._data);
   }
 
   _formSubmitHandler(evt) {
@@ -170,5 +192,45 @@ export default class EventEdit extends AbstractView {
   setCloseButtonClickHandler(callback) {
     this._callback.closeButtonClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeButtonClickHandler);
+  }
+
+  static parseEventToData(event) {
+    return Object.assign(
+      {},
+      event,
+      {
+        // isDueDate: task.dueDate !== null,
+        // isRepeating: isTaskRepeating(task.repeating),
+        isOffers: event.offers.length > 0,
+        isDestination: event.destination,
+        isPictures: event.destination.pictures.length > 0,
+      },
+    );
+  }
+
+  static parseDataToEvent(data) {
+    data = Object.assign({}, data);
+
+    // if (!data.isDueDate) {
+    //   data.dueDate = null;
+    // }
+
+    // if (!data.isRepeating) {
+    //   data.repeating = {
+    //     mo: false,
+    //     tu: false,
+    //     we: false,
+    //     th: false,
+    //     fr: false,
+    //     sa: false,
+    //     su: false,
+    //   };
+    // }
+
+    delete data.isOffers;
+    delete data.isDestination;
+    delete data.isPictures;
+
+    return data;
   }
 }
