@@ -45,7 +45,9 @@ export default class Trip {
   }
 
   _sortEvents(sortType) {
-    switch (sortType) {
+    this._currentSortType = sortType;
+
+    switch (this._currentSortType) {
       case SortType.TIME:
         this._tripEvents.sort(sortTime);
         break;
@@ -55,8 +57,6 @@ export default class Trip {
       default:
         this._tripEvents = this._sourcedTripEvents.slice();
     }
-
-    this._currentSortType = sortType;
   }
 
   _handleSortTypeChange(sortType) {

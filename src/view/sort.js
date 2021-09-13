@@ -42,9 +42,7 @@ export default class Sort extends AbstractView {
   }
 
   _sortTypeChangeHandler(evt) {
-    if (evt.target.dataset.sortType !== 'default'
-      && evt.target.dataset.sortType !== 'time'
-      && evt.target.dataset.sortType !== 'price') {
+    if (!(['default', 'time', 'price'].includes(evt.target.dataset.sortType))) {
       return;
     }
 
