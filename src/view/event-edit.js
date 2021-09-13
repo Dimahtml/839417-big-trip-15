@@ -62,7 +62,6 @@ const createEventTypeItem = (eventTypes) => {
 
 const createPicturesItemTemplate = (event) => {
   const pictures = event.destination.pictures;
-  console.log(pictures);
   return pictures.map((picture) =>
     `<img class="event__photo" src="${picture.src}"
       alt="${picture}">
@@ -88,7 +87,6 @@ const createEventSectionDestination = (event, isPictures) => (
 const createEventEditTemplate = (data) => {
   const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures} = data;
 
-  // console.log(data)
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -164,6 +162,16 @@ export default class EventEdit extends AbstractView {
 
   getTemplate() {
     return createEventEditTemplate(this._data);
+  }
+
+  updateElement() {
+    const prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
   }
 
   _formSubmitHandler(evt) {
