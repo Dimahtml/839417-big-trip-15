@@ -24,13 +24,13 @@ export default class Event {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
-  init(event) {
+  init(event, types) {
     this._event = event;
 
     const prevEventComponent = this._eventComponent;
     const prevEventEditComponent = this._eventEditComponent;
 
-    this._eventComponent = new EventView(event);
+    this._eventComponent = new EventView(event, types);
     this._eventEditComponent = new EventEditView(event);
 
     this._eventComponent.setOpenButtonClickHandler(this._handleOpenButtonClick);

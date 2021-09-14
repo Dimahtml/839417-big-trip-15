@@ -4,7 +4,7 @@ import TripPresenter from './presenter/trip.js';
 import {generateEvent} from './mock/event.js';
 import {render, RenderPosition} from './utils/render.js';
 
-const EVENT_COUNT = 15;
+const EVENT_COUNT = 5;
 
 const events = new Array(EVENT_COUNT).fill().map(generateEvent);
 

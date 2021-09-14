@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
-import {Types} from '../const';
+import {Types, OFFERS_BY_TYPES} from '../const';
 import AbstractView from './abstract.js';
-
+// Три функции для отрисовки блока OFFERS
 const createOfferName = (offer = {}) => {
   let offerName = '';
   switch (offer.title) {
@@ -28,7 +28,25 @@ const createOfferName = (offer = {}) => {
 };
 
 const createEventOfferSelector = (event = {}) => {
-  const {offers} = event;
+  // const {offers} = event;
+  // const currentType = event.type;
+  // const offers = OFFERS_BY_TYPES.currentType;
+  // console.log(offers);
+  // console.log(event.type);
+  // console.log(Types.TAXI       type[0].toUpperCase() + type.substring(1));
+  let offers = [];
+  switch (event.type) {
+    case Types.TAXI:
+      offers = OFFERS_BY_TYPES.TAXI;
+      break;
+    case Types.BUS:
+      offers = OFFERS_BY_TYPES.BUS;
+      break;
+    default:
+      offers = [];
+  }
+console.log(offers);
+
 
   return offers.map((offer) =>
     `<div class="event__offer-selector">
@@ -49,7 +67,7 @@ const createEventSectionOffers = (event) => (
     </div>
   </section>`
 );
-
+// Функция отрисовки одного элемента ТИП ПОЕЗДКИ
 const createEventTypeItem = (eventTypes) => {
   const types = Object.values(eventTypes);
 
@@ -59,7 +77,7 @@ const createEventTypeItem = (eventTypes) => {
         <label class="event__type-label  event__type-label--${type}" for="event-type-taxi-1">${type[0].toUpperCase() + type.substring(1)}</label>
     </div>`).join('');
 };
-
+// Три функции для отрисовки блока DESTINATION
 const createPicturesItemTemplate = (event) => {
   const pictures = event.destination.pictures;
   return pictures.map((picture) =>
@@ -83,7 +101,7 @@ const createEventSectionDestination = (event, isPictures) => (
     ${isPictures ? createPicturesContainerTemplate(event) : ''}
   </section>`
 );
-
+// функция для отрисовки всей формы EVENT EDIT
 const createEventEditTemplate = (data) => {
   const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures} = data;
 
@@ -148,16 +166,21 @@ const createEventEditTemplate = (data) => {
 export default class EventEdit extends AbstractView {
   constructor(event) {
     super();
-    // this._event = event;
     this._data = EventEdit.parseEventToData(event);
-
-    // 4. Теперь обработчик - метод класса, а не стрелочная функция.
-    // Поэтому при передаче в addEventListener он теряет контекст (this),
-    // а с контекстом - доступ к свойствам и методам.
-    // Чтобы такого не происходило, нужно насильно
-    // привязать обработчик к контексту с помощью bind
+    // console.log(this._data);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
+
+    this._typeEventToggleHandler = this._typeEventToggleHandler.bind(this);
+    this._offerToggleHandler = this._offerToggleHandler.bind(this);
+
+    this._offerChangeCheckboxHandler = this._offerChangeCheckboxHandler.bind(this);
+
+    // навешиваем обработчики на чекбоксы-офферы
+    if (this._data.isOffers) {
+      const offersCheckboxes = this.getElement().querySelectorAll('.event__offer-checkbox');
+      offersCheckboxes.forEach((checkbox) => checkbox.addEventListener('click', this._offerChangeCheckboxHandler));
+    }
   }
 
   getTemplate() {
@@ -175,7 +198,7 @@ export default class EventEdit extends AbstractView {
       update,
     );
 
-    this.updateElement();
+    // this.updateElement();
   }
 
   updateElement() {
@@ -188,10 +211,50 @@ export default class EventEdit extends AbstractView {
     parent.replaceChild(newElement, prevElement);
   }
 
+  _typeEventToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      // isDueDate: !this._data.isDueDate,
+
+      // data.type = this._data.type;
+      // ??????????????????????
+    });
+  }
+
+  _offerToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      // isRepeating: !this._data.isRepeating,
+    });
+  }
+
+  _offerChangeCheckboxHandler(evt) {
+    if (evt.target.checked) {
+      evt.target.setAttribute('checked', 'checked');
+    } else {
+      evt.target.removeAttribute('checked');
+    }
+
+    const checkedOffers = document.querySelectorAll('.event__offer-checkbox:checked');
+    const resultOffers = [];
+
+    checkedOffers.forEach((input) => {
+      const contentTitle = input.nextElementSibling.querySelector('.event__offer-title').textContent;
+      const contentPrice = input.nextElementSibling.querySelector('.event__offer-price').textContent;
+      resultOffers.push({
+        title: contentTitle,
+        price: Number(contentPrice),
+      });
+    });
+
+    this.updateData({
+      offers: resultOffers,
+    });
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    // 3. А внутри абстрактного обработчика вызовем колбэк
-    this._callback.formSubmit(this._event);
+    this._callback.formSubmit(EventEdit.parseDataToEvent(this._data));
   }
 
   _closeButtonClickHandler(evt) {
@@ -200,14 +263,7 @@ export default class EventEdit extends AbstractView {
   }
 
   setFormSubmitHandler(callback) {
-    // Мы могли бы сразу передать callback в addEventListener,
-    // но тогда бы для удаления обработчика в будущем,
-    // нам нужно было бы производить это снаружи, где-то там,
-    // где мы вызывали setFormSubmitHandler, что не всегда удобно
-
-    // 1. Поэтому колбэк мы запишем во внутреннее свойство
     this._callback.formSubmit = callback;
-    // 2. В addEventListener передадим абстрактный обработчик
     this.getElement().addEventListener('submit', this._formSubmitHandler);
   }
 
@@ -221,10 +277,8 @@ export default class EventEdit extends AbstractView {
       {},
       event,
       {
-        // isDueDate: task.dueDate !== null,
-        // isRepeating: isTaskRepeating(task.repeating),
         isOffers: event.offers.length > 0,
-        isDestination: event.destination,
+        isDestination: event.destination !== null,
         isPictures: event.destination.pictures.length > 0,
       },
     );
@@ -233,9 +287,9 @@ export default class EventEdit extends AbstractView {
   static parseDataToEvent(data) {
     data = Object.assign({}, data);
 
-    // if (!data.isDueDate) {
-    //   data.dueDate = null;
-    // }
+    // data.type = this._data.type;
+
+    // data.offers = resultOffers;
 
     // if (!data.isRepeating) {
     //   data.repeating = {
@@ -253,6 +307,7 @@ export default class EventEdit extends AbstractView {
     delete data.isDestination;
     delete data.isPictures;
 
+    // console.log(data);
     return data;
   }
 }
