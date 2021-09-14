@@ -159,8 +159,6 @@ export default class EventEdit extends AbstractView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
 
-    // this._offerToggleHandler = this._offerToggleHandler.bind(this);
-
     this._offerChangeCheckboxHandler = this._offerChangeCheckboxHandler.bind(this);
 
     // навешиваем обработчики на чекбоксы-офферы
@@ -197,13 +195,6 @@ export default class EventEdit extends AbstractView {
 
     parent.replaceChild(newElement, prevElement);
   }
-
-  // _offerToggleHandler(evt) {
-  //   evt.preventDefault();
-  //   this.updateData({
-  //     // isRepeating: !this._data.isRepeating,
-  //   });
-  // }
 
   _offerChangeCheckboxHandler(evt) {
     if (evt.target.checked) {
