@@ -32,8 +32,7 @@ const generateBasePrice = () => getRandomInteger(1, 50) * 10;
 export const generateEvent = () => {
   const {dateFrom, dateTo} = generateDate();
   const type = generateType();
-  const {offers} = generateOffers(type);
-
+  const offers = generateOffers(type).offers;
   return {
     id: nanoid(),
     basePrice: generateBasePrice(),

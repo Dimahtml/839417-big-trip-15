@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import {Types, OFFERS_BY_TYPES} from '../const';
+import {Types} from '../const';
+import {generateOffers} from '../mock/offer';
 import AbstractView from './abstract.js';
 // Три функции для отрисовки блока OFFERS
 const createOfferName = (offer = {}) => {
@@ -28,35 +29,23 @@ const createOfferName = (offer = {}) => {
 };
 
 const createEventOfferSelector = (event = {}) => {
-  // const {offers} = event;
-  // const currentType = event.type;
-  // const offers = OFFERS_BY_TYPES.currentType;
-  // console.log(offers);
-  // console.log(event.type);
-  // console.log(Types.TAXI       type[0].toUpperCase() + type.substring(1));
-  let offers = [];
-  switch (event.type) {
-    case Types.TAXI:
-      offers = OFFERS_BY_TYPES.TAXI;
-      break;
-    case Types.BUS:
-      offers = OFFERS_BY_TYPES.BUS;
-      break;
-    default:
-      offers = [];
-  }
-console.log(offers);
+  const potentialOffers = generateOffers(event.type);
+  const potentialOffersTitles = potentialOffers.offers.map((item) => item.title);
 
-
-  return offers.map((offer) =>
-    `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${createOfferName(offer)}-1" type="checkbox" name="event-offer-${createOfferName(offer)}" checked>
+  return potentialOffers.offers.map((offer) => {
+    let isChecked = false;
+    if (potentialOffersTitles.includes(offer.title)) {
+      isChecked = true;
+    }
+    return `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${createOfferName(offer)}-1" type="checkbox" name="event-offer-${createOfferName(offer)}" ${isChecked ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${createOfferName(offer)}-1">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
       </label>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 };
 
 const createEventSectionOffers = (event) => (
@@ -167,12 +156,10 @@ export default class EventEdit extends AbstractView {
   constructor(event) {
     super();
     this._data = EventEdit.parseEventToData(event);
-    // console.log(this._data);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
 
-    this._typeEventToggleHandler = this._typeEventToggleHandler.bind(this);
-    this._offerToggleHandler = this._offerToggleHandler.bind(this);
+    // this._offerToggleHandler = this._offerToggleHandler.bind(this);
 
     this._offerChangeCheckboxHandler = this._offerChangeCheckboxHandler.bind(this);
 
@@ -198,7 +185,7 @@ export default class EventEdit extends AbstractView {
       update,
     );
 
-    // this.updateElement();
+    this.updateElement();
   }
 
   updateElement() {
@@ -211,22 +198,12 @@ export default class EventEdit extends AbstractView {
     parent.replaceChild(newElement, prevElement);
   }
 
-  _typeEventToggleHandler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      // isDueDate: !this._data.isDueDate,
-
-      // data.type = this._data.type;
-      // ??????????????????????
-    });
-  }
-
-  _offerToggleHandler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      // isRepeating: !this._data.isRepeating,
-    });
-  }
+  // _offerToggleHandler(evt) {
+  //   evt.preventDefault();
+  //   this.updateData({
+  //     // isRepeating: !this._data.isRepeating,
+  //   });
+  // }
 
   _offerChangeCheckboxHandler(evt) {
     if (evt.target.checked) {
