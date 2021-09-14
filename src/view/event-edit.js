@@ -161,11 +161,7 @@ export default class EventEdit extends AbstractView {
 
     this._offerChangeCheckboxHandler = this._offerChangeCheckboxHandler.bind(this);
 
-    // навешиваем обработчики на чекбоксы-офферы
-    if (this._data.isOffers) {
-      const offersCheckboxes = this.getElement().querySelectorAll('.event__offer-checkbox');
-      offersCheckboxes.forEach((checkbox) => checkbox.addEventListener('click', this._offerChangeCheckboxHandler));
-    }
+    this._setInnerHandlers();
   }
 
   getTemplate() {
@@ -189,19 +185,38 @@ export default class EventEdit extends AbstractView {
   updateElement() {
     const prevElement = this.getElement();
     const parent = prevElement.parentElement;
+
     this.removeElement();
 
     const newElement = this.getElement();
 
     parent.replaceChild(newElement, prevElement);
+
+    this.restoreHandlers();
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  _setInnerHandlers() {
+    //навешиваем обработчики на чекбоксы-офферы
+    if (this._data.isOffers) {
+      // this.getElement().querySelector('form').addEventListener('click', this._repeatingToggleHandler);
+      const offersCheckboxes = this.getElement().querySelectorAll('.event__offer-checkbox');
+      offersCheckboxes.forEach((checkbox) => checkbox.addEventListener('click', this._offerChangeCheckboxHandler));
+    }
   }
 
   _offerChangeCheckboxHandler(evt) {
     if (evt.target.checked) {
-      evt.target.setAttribute('checked', 'checked');
-    } else {
       evt.target.removeAttribute('checked');
+    } else {
+      evt.target.setAttribute('checked', 'checked');
     }
+
+    evt.target.checked = false;
 
     const checkedOffers = document.querySelectorAll('.event__offer-checkbox:checked');
     const resultOffers = [];
