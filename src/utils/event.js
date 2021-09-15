@@ -11,43 +11,43 @@ export const sortTime = (eventA, eventB) => {
 export const getOffersByType = (type) => {
   let offers = [];
   switch (type) {
-    case 'Taxi':
+    case 'taxi':
       offers = [{title: 'Upgrade to a business class',price: 120},
         {title: 'Choose the radio station', price: 60}];
       break;
-    case 'Bus':
+    case 'bus':
       offers = [{title: 'Choose seats', price: 120}];
       break;
-    case 'Train':
+    case 'train':
       offers = [{title: 'Add meal', price: 120},
         {title: 'Switch to comfort', price: 120},
         {title: 'Add luggage', price: 60}];
       break;
-    case 'Ship':
+    case 'ship':
       offers = [{title: 'Upgrade to a business class',price: 120},
         {title: 'Switch to comfort', price: 60}];
       break;
-    case 'Transport':
+    case 'transport':
       offers = [{title: 'Upgrade to a business class',price: 120},
         {title: 'Choose the radio station', price: 60}];
       break;
-    case 'Drive':
+    case 'drive':
       offers = [];
       break;
-    case 'Flight':
+    case 'flight':
       offers = [{title: 'Upgrade to a business class', price: 120},
         {title: 'Switch to comfort', price: 120},
         {title: 'Choose seats', price: 120},
         {title: 'Add luggage', price: 120},
         {title: 'Travel by train', price: 60 }];
       break;
-    case 'Check-in':
+    case 'check-in':
       offers = [{title: 'Upgrade to a business class', price: 120}];
       break;
-    case 'Sightseeing':
+    case 'sightseeing':
       offers = [];
       break;
-    case 'Restaurant':
+    case 'restaurant':
       offers = [];
       break;
     default:

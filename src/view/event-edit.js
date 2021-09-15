@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
-import {getOffersByType} from '../utils/event';
-import {Types} from '../const';
-import {generateOffers} from '../mock/offer';
+import {getOffersByType} from '../utils/event.js';
+import {Types} from '../const.js';
+import {generateOffers} from '../mock/offer.js';
 import AbstractView from './abstract.js';
 // Три функции для отрисовки блока OFFERS
 const createOfferName = (offer = {}) => {
@@ -101,7 +101,6 @@ const createEventSectionDestination = (event, isPictures) => (
 // функция для отрисовки всей формы EVENT EDIT
 const createEventEditTemplate = (data) => {
   const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures} = data;
-
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -190,7 +189,6 @@ export default class EventEdit extends AbstractView {
       this._data,
       update,
     );
-
     if (justDataUpdating) {
       return;
     }
@@ -288,7 +286,7 @@ export default class EventEdit extends AbstractView {
   _dateToChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      timeTo: evt.target.value,
+      dateTo: evt.target.value,
     });
   }
 
@@ -320,13 +318,12 @@ export default class EventEdit extends AbstractView {
   }
 
   static parseEventToData(event) {
-    const potentialTypes = getOffersByType(event.type);
-
+    const potentialOffers = getOffersByType(event.type);
     return Object.assign(
       {},
       event,
       {
-        isOffers: potentialTypes.length > 0,
+        isOffers: potentialOffers.length > 0,
         isDestination: event.destination !== null,
         isPictures: event.destination.pictures.length > 0,
       },
@@ -337,7 +334,6 @@ export default class EventEdit extends AbstractView {
     data = Object.assign({}, data);
 
     // data.type = this._data.type;
-
     // data.offers = resultOffers;
 
     // if (!data.isRepeating) {

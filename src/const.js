@@ -1,14 +1,14 @@
 export const Types = {
-  TAXI: 'Taxi',
-  BUS: 'Bus',
-  TRAIN: 'Train',
-  SHIP: 'Ship',
-  TRANSPORT: 'Transport',
-  DRIVE: 'Drive',
-  FLIGHT: 'Flight',
-  CHECKIN: 'Check-in',
-  SIGHTSEEING: 'Sightseeing',
-  RESTARAUNT: 'Restaurant',
+  TAXI: 'taxi',
+  BUS: 'bus',
+  TRAIN: 'train',
+  SHIP: 'ship',
+  TRANSPORT: 'transport',
+  DRIVE: 'drive',
+  FLIGHT: 'flight',
+  CHECKIN: 'check-in',
+  SIGHTSEEING: 'sightseeing',
+  RESTARAUNT: 'restaurant',
 };
 
 export const SortType = {
