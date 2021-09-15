@@ -176,6 +176,12 @@ export default class EventEdit extends SmartView {
     this._setInnerHandlers();
   }
 
+  reset(event) {
+    this.updateData(
+      EventEdit.parseEventToData(event),
+    );
+  }
+
   getTemplate() {
     return createEventEditTemplate(this._data);
   }
@@ -245,28 +251,28 @@ export default class EventEdit extends SmartView {
         name: evt.target.value, pictures:
         this._data.destination.pictures,
       },
-    });
+    }, true);
   }
 
   _dateFromChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
       dateFrom: evt.target.value,
-    });
+    }, true);
   }
 
   _dateToChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
       dateTo: evt.target.value,
-    });
+    }, true);
   }
 
   _basePriceChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
       basePrice: evt.target.value,
-    });
+    }, true);
   }
 
   _formSubmitHandler(evt) {
