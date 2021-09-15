@@ -68,8 +68,8 @@ const createEventTypeItem = (eventTypes) => {
 
   return types.map((type) =>
     `<div class="event__type-item">
-      <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-        <label class="event__type-label  event__type-label--${type}" for="event-type-taxi-1">${type[0].toUpperCase() + type.substring(1)}</label>
+      <input id="event-type-${type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type.toLowerCase()}">
+        <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-1">${type[0].toUpperCase() + type.substring(1)}</label>
     </div>`).join('');
 };
 // Три функции для отрисовки блока DESTINATION
@@ -174,17 +174,19 @@ export default class EventEdit extends AbstractView {
     return createEventEditTemplate(this._data);
   }
 
-  updateData(update) {
+  updateData(update, justDataUpdating) {
     if (!update) {
       return;
     }
-
     this._data = Object.assign(
       {},
       this._data,
       update,
     );
 
+    if (justDataUpdating) {
+      return;
+    }
     this.updateElement();
   }
 
@@ -215,28 +217,20 @@ export default class EventEdit extends AbstractView {
   }
 
   _offerChangeCheckboxHandler(evt) {
-    // if (evt.target.checked) {
-    //   evt.target.removeAttribute('checked');
-    // } else {
-    //   evt.target.setAttribute('checked', 'checked');
-    // }
+    evt.preventDefault();
+    evt.target.toggleAttribute('checked');
 
+    const checkedOffers = document.querySelectorAll('.event__offer-checkbox:checked');
+    const resultOffers = [];
 
-    console.log('кликнул на чекбокс');
-    // evt.target.checked = false;
-
-    // const checkedOffers = document.querySelectorAll('.event__offer-checkbox:checked');
-    // const resultOffers = [];
-
-    // checkedOffers.forEach((input) => {
-    //   const contentTitle = input.nextElementSibling.querySelector('.event__offer-title').textContent;
-    //   const contentPrice = input.nextElementSibling.querySelector('.event__offer-price').textContent;
-    //   resultOffers.push({
-    //     title: contentTitle,
-    //     price: Number(contentPrice),
-    //   });
-    // });
-
+    checkedOffers.forEach((input) => {
+      const contentTitle = input.nextElementSibling.querySelector('.event__offer-title').textContent;
+      const contentPrice = input.nextElementSibling.querySelector('.event__offer-price').textContent;
+      resultOffers.push({
+        title: contentTitle,
+        price: Number(contentPrice),
+      });
+    });
     // this.updateData({
     //   offers: resultOffers,
     // });
