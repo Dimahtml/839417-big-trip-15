@@ -165,6 +165,11 @@ export default class EventEdit extends AbstractView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
 
+    this._typeToggleHandler = this._typeToggleHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
+    this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
+    this._basePriceChangeHandler = this._basePriceChangeHandler.bind(this);
     this._offerChangeCheckboxHandler = this._offerChangeCheckboxHandler.bind(this);
 
     this._setInnerHandlers();
@@ -214,6 +219,21 @@ export default class EventEdit extends AbstractView {
       const offersCheckboxes = this.getElement().querySelectorAll('.event__offer-checkbox');
       offersCheckboxes.forEach((checkbox) => checkbox.addEventListener('change', this._offerChangeCheckboxHandler));
     }
+    this.getElement()
+      .querySelectorAll('.event__type-group input[type="radio"]')
+      .forEach((input) => input.addEventListener('change', this._typeToggleHandler));
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this._destinationChangeHandler);
+    this.getElement()
+      .querySelector('input[name="event-start-time"]')
+      .addEventListener('change', this._dateFromChangeHandler);
+    this.getElement()
+      .querySelector('input[name="event-end-time"]')
+      .addEventListener('change', this._dateToChangeHandler);
+    this.getElement()
+      .querySelector('.event__input--price')
+      .addEventListener('change', this._basePriceChangeHandler);
   }
 
   _offerChangeCheckboxHandler(evt) {
@@ -231,9 +251,54 @@ export default class EventEdit extends AbstractView {
         price: Number(contentPrice),
       });
     });
+    // console.log(this._data);
+    // console.log(resultOffers);
+
+    // В ЧЕМ ПРОБЛЕМА С this.updateData ????????????? НЕПОНЯТНО !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
     // this.updateData({
     //   offers: resultOffers,
     // });
+  }
+
+  _typeToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      type: evt.target.value,
+    });
+    console.log(this._data);
+  }
+
+  _destinationChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      destination: {
+        description: this._data.destination.description,
+        name: evt.target.value, pictures:
+        this._data.destination.pictures,
+      },
+    });
+  }
+
+  _dateFromChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      dateFrom: evt.target.value,
+    });
+  }
+
+  _dateToChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      timeTo: evt.target.value,
+    });
+  }
+
+  _basePriceChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      basePrice: evt.target.value,
+    });
   }
 
   _formSubmitHandler(evt) {
