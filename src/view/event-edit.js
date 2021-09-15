@@ -311,26 +311,10 @@ export default class EventEdit extends SmartView {
   static parseDataToEvent(data) {
     data = Object.assign({}, data);
 
-    // data.type = this._data.type;
-    // data.offers = resultOffers;
-
-    // if (!data.isRepeating) {
-    //   data.repeating = {
-    //     mo: false,
-    //     tu: false,
-    //     we: false,
-    //     th: false,
-    //     fr: false,
-    //     sa: false,
-    //     su: false,
-    //   };
-    // }
-
     delete data.isOffers;
     delete data.isDestination;
     delete data.isPictures;
 
-    // console.log(data);
     return data;
   }
 }
