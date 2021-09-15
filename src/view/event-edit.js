@@ -21,8 +21,14 @@ const createOfferName = (offer = {}) => {
     case 'Travel by train':
       offerName = 'train';
       break;
+    case 'Choose the radio station':
+      offerName = 'radiostation';
+      break;
+    case 'Upgrade to a business class':
+      offerName = 'businessclass';
+      break;
     default:
-      offerName = '';
+      offerName = 'default';
   }
 
   return offerName;
@@ -203,36 +209,37 @@ export default class EventEdit extends AbstractView {
   _setInnerHandlers() {
     //навешиваем обработчики на чекбоксы-офферы
     if (this._data.isOffers) {
-      // this.getElement().querySelector('form').addEventListener('click', this._repeatingToggleHandler);
       const offersCheckboxes = this.getElement().querySelectorAll('.event__offer-checkbox');
-      offersCheckboxes.forEach((checkbox) => checkbox.addEventListener('click', this._offerChangeCheckboxHandler));
+      offersCheckboxes.forEach((checkbox) => checkbox.addEventListener('change', this._offerChangeCheckboxHandler));
     }
   }
 
   _offerChangeCheckboxHandler(evt) {
-    if (evt.target.checked) {
-      evt.target.removeAttribute('checked');
-    } else {
-      evt.target.setAttribute('checked', 'checked');
-    }
+    // if (evt.target.checked) {
+    //   evt.target.removeAttribute('checked');
+    // } else {
+    //   evt.target.setAttribute('checked', 'checked');
+    // }
 
-    evt.target.checked = false;
 
-    const checkedOffers = document.querySelectorAll('.event__offer-checkbox:checked');
-    const resultOffers = [];
+    console.log('кликнул на чекбокс');
+    // evt.target.checked = false;
 
-    checkedOffers.forEach((input) => {
-      const contentTitle = input.nextElementSibling.querySelector('.event__offer-title').textContent;
-      const contentPrice = input.nextElementSibling.querySelector('.event__offer-price').textContent;
-      resultOffers.push({
-        title: contentTitle,
-        price: Number(contentPrice),
-      });
-    });
+    // const checkedOffers = document.querySelectorAll('.event__offer-checkbox:checked');
+    // const resultOffers = [];
 
-    this.updateData({
-      offers: resultOffers,
-    });
+    // checkedOffers.forEach((input) => {
+    //   const contentTitle = input.nextElementSibling.querySelector('.event__offer-title').textContent;
+    //   const contentPrice = input.nextElementSibling.querySelector('.event__offer-price').textContent;
+    //   resultOffers.push({
+    //     title: contentTitle,
+    //     price: Number(contentPrice),
+    //   });
+    // });
+
+    // this.updateData({
+    //   offers: resultOffers,
+    // });
   }
 
   _formSubmitHandler(evt) {
