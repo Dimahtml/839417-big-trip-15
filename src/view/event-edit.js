@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {getOffersByType} from '../utils/event';
 import {Types} from '../const';
 import {generateOffers} from '../mock/offer';
 import AbstractView from './abstract.js';
@@ -36,11 +37,12 @@ const createOfferName = (offer = {}) => {
 
 const createEventOfferSelector = (event = {}) => {
   const potentialOffers = generateOffers(event.type);
-  const potentialOffersTitles = potentialOffers.offers.map((item) => item.title);
+  const currentOffersTitles = event.offers.map((item) => item.title);
+  // const potentialOffersTitles = potentialOffers.offers.map((item) => item.title);
 
   return potentialOffers.offers.map((offer) => {
     let isChecked = false;
-    if (potentialOffersTitles.includes(offer.title)) {
+    if (currentOffersTitles.includes(offer.title)) {
       isChecked = true;
     }
     return `<div class="event__offer-selector">
@@ -54,11 +56,11 @@ const createEventOfferSelector = (event = {}) => {
   }).join('');
 };
 
-const createEventSectionOffers = (event) => (
+const createEventSectionOffers = (data) => (
   `<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
     <div class="event__available-offers">
-      ${createEventOfferSelector(event)}
+      ${createEventOfferSelector(data)}
     </div>
   </section>`
 );
@@ -211,6 +213,7 @@ export default class EventEdit extends AbstractView {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
   }
 
   _setInnerHandlers() {
@@ -251,14 +254,10 @@ export default class EventEdit extends AbstractView {
         price: Number(contentPrice),
       });
     });
-    // console.log(this._data);
-    // console.log(resultOffers);
 
-    // В ЧЕМ ПРОБЛЕМА С this.updateData ????????????? НЕПОНЯТНО !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    // this.updateData({
-    //   offers: resultOffers,
-    // });
+    this.updateData({
+      offers: resultOffers,
+    });
   }
 
   _typeToggleHandler(evt) {
@@ -266,7 +265,6 @@ export default class EventEdit extends AbstractView {
     this.updateData({
       type: evt.target.value,
     });
-    console.log(this._data);
   }
 
   _destinationChangeHandler(evt) {
@@ -322,11 +320,13 @@ export default class EventEdit extends AbstractView {
   }
 
   static parseEventToData(event) {
+    const potentialTypes = getOffersByType(event.type);
+
     return Object.assign(
       {},
       event,
       {
-        isOffers: event.offers.length > 0,
+        isOffers: potentialTypes.length > 0,
         isDestination: event.destination !== null,
         isPictures: event.destination.pictures.length > 0,
       },
