@@ -1,7 +1,9 @@
 import dayjs from 'dayjs';
-import {Types} from '../const';
-import AbstractView from './abstract.js';
-
+import {getOffersByType} from '../utils/event.js';
+import {Types} from '../const.js';
+import {generateOffers} from '../mock/offer.js';
+import SmartView from './smart.js';
+// Три функции для отрисовки блока OFFERS
 const createOfferName = (offer = {}) => {
   let offerName = '';
   switch (offer.title) {
@@ -20,48 +22,85 @@ const createOfferName = (offer = {}) => {
     case 'Travel by train':
       offerName = 'train';
       break;
+    case 'Choose the radio station':
+      offerName = 'radiostation';
+      break;
+    case 'Upgrade to a business class':
+      offerName = 'businessclass';
+      break;
     default:
-      offerName = '';
+      offerName = 'default';
   }
 
   return offerName;
 };
 
 const createEventOfferSelector = (event = {}) => {
-  const {offers} = event;
+  const potentialOffers = generateOffers(event.type);
+  const currentOffersTitles = event.offers.map((item) => item.title);
+  // const potentialOffersTitles = potentialOffers.offers.map((item) => item.title);
 
-  return offers.map((offer) =>
-    `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${createOfferName(offer)}-1" type="checkbox" name="event-offer-${createOfferName(offer)}" checked>
+  return potentialOffers.offers.map((offer) => {
+    let isChecked = false;
+    if (currentOffersTitles.includes(offer.title)) {
+      isChecked = true;
+    }
+    return `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${createOfferName(offer)}-1" type="checkbox" name="event-offer-${createOfferName(offer)}" ${isChecked ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${createOfferName(offer)}-1">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
       </label>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 };
 
-const createEventSectionOffers = (event) => (
+const createEventSectionOffers = (data) => (
   `<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
     <div class="event__available-offers">
-      ${createEventOfferSelector(event)}
+      ${createEventOfferSelector(data)}
     </div>
   </section>`
 );
-
+// Функция отрисовки одного элемента ТИП ПОЕЗДКИ
 const createEventTypeItem = (eventTypes) => {
   const types = Object.values(eventTypes);
 
   return types.map((type) =>
     `<div class="event__type-item">
-      <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-        <label class="event__type-label  event__type-label--${type}" for="event-type-taxi-1">${type[0].toUpperCase() + type.substring(1)}</label>
+      <input id="event-type-${type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type.toLowerCase()}">
+        <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-1">${type[0].toUpperCase() + type.substring(1)}</label>
     </div>`).join('');
 };
+// Три функции для отрисовки блока DESTINATION
+const createPicturesItemTemplate = (event) => {
+  const pictures = event.destination.pictures;
+  return pictures.map((picture) =>
+    `<img class="event__photo" src="${picture.src}"
+      alt="${picture}">
+    </img>`).join('');
+};
 
-const createEventEditTemplate = (event = {}) => {
-  const {type, destination, dateFrom, dateTo, basePrice, offers} = event;
+const createPicturesContainerTemplate = (event) => (
+  `<div class="event__photos-container">
+    <div class="event__photos-tape">
+      ${createPicturesItemTemplate(event)}
+    </div>
+  </div>`
+);
+
+const createEventSectionDestination = (event, isPictures) => (
+  `<section class="event__section  event__section--destination">
+    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${event.destination.description}</p>
+    ${isPictures ? createPicturesContainerTemplate(event) : ''}
+  </section>`
+);
+// функция для отрисовки всей формы EVENT EDIT
+const createEventEditTemplate = (data) => {
+  const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures} = data;
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -74,9 +113,7 @@ const createEventEditTemplate = (event = {}) => {
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
-
             ${createEventTypeItem(Types)}
-
           </fieldset>
         </div>
       </div>
@@ -116,38 +153,131 @@ const createEventEditTemplate = (event = {}) => {
       </button>
     </header>
     <section class="event__details">
-      ${offers.length > 0 ? createEventSectionOffers(event) : ''}
-
-      <section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destination.description}</p>
-      </section>
+      ${isOffers ? createEventSectionOffers(data) : ''}
+      ${isDestination ? createEventSectionDestination(data, isPictures) : ''}
     </section>
   </form>`;
 };
 
-export default class EventEdit extends AbstractView {
+export default class EventEdit extends SmartView {
   constructor(event) {
     super();
-    this._event = event;
-
-    // 4. Теперь обработчик - метод класса, а не стрелочная функция.
-    // Поэтому при передаче в addEventListener он теряет контекст (this),
-    // а с контекстом - доступ к свойствам и методам.
-    // Чтобы такого не происходило, нужно насильно
-    // привязать обработчик к контексту с помощью bind
+    this._data = EventEdit.parseEventToData(event);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
+
+    this._typeToggleHandler = this._typeToggleHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
+    this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
+    this._basePriceChangeHandler = this._basePriceChangeHandler.bind(this);
+    this._offerChangeCheckboxHandler = this._offerChangeCheckboxHandler.bind(this);
+
+    this._setInnerHandlers();
+  }
+
+  reset(event) {
+    this.updateData(
+      EventEdit.parseEventToData(event),
+    );
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._event);
+    return createEventEditTemplate(this._data);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
+  }
+
+  _setInnerHandlers() {
+    //навешиваем обработчики на чекбоксы-офферы
+    if (this._data.isOffers) {
+      const offersCheckboxes = this.getElement().querySelectorAll('.event__offer-checkbox');
+      offersCheckboxes.forEach((checkbox) => checkbox.addEventListener('change', this._offerChangeCheckboxHandler));
+    }
+    this.getElement()
+      .querySelectorAll('.event__type-group input[type="radio"]')
+      .forEach((input) => input.addEventListener('change', this._typeToggleHandler));
+    this.getElement()
+      .querySelector('.event__input--destination')
+      .addEventListener('change', this._destinationChangeHandler);
+    this.getElement()
+      .querySelector('input[name="event-start-time"]')
+      .addEventListener('change', this._dateFromChangeHandler);
+    this.getElement()
+      .querySelector('input[name="event-end-time"]')
+      .addEventListener('change', this._dateToChangeHandler);
+    this.getElement()
+      .querySelector('.event__input--price')
+      .addEventListener('change', this._basePriceChangeHandler);
+  }
+
+  _offerChangeCheckboxHandler(evt) {
+    evt.preventDefault();
+    evt.target.toggleAttribute('checked');
+
+    const checkedOffers = document.querySelectorAll('.event__offer-checkbox:checked');
+    const resultOffers = [];
+
+    checkedOffers.forEach((input) => {
+      const contentTitle = input.nextElementSibling.querySelector('.event__offer-title').textContent;
+      const contentPrice = input.nextElementSibling.querySelector('.event__offer-price').textContent;
+      resultOffers.push({
+        title: contentTitle,
+        price: Number(contentPrice),
+      });
+    });
+
+    this.updateData({
+      offers: resultOffers,
+    });
+  }
+
+  _typeToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      type: evt.target.value,
+    });
+  }
+
+  _destinationChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      destination: {
+        description: this._data.destination.description,
+        name: evt.target.value, pictures:
+        this._data.destination.pictures,
+      },
+    }, true);
+  }
+
+  _dateFromChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      dateFrom: evt.target.value,
+    }, true);
+  }
+
+  _dateToChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      dateTo: evt.target.value,
+    }, true);
+  }
+
+  _basePriceChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      basePrice: evt.target.value,
+    }, true);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    // 3. А внутри абстрактного обработчика вызовем колбэк
-    this._callback.formSubmit(this._event);
+    this._callback.formSubmit(EventEdit.parseDataToEvent(this._data));
   }
 
   _closeButtonClickHandler(evt) {
@@ -156,19 +286,35 @@ export default class EventEdit extends AbstractView {
   }
 
   setFormSubmitHandler(callback) {
-    // Мы могли бы сразу передать callback в addEventListener,
-    // но тогда бы для удаления обработчика в будущем,
-    // нам нужно было бы производить это снаружи, где-то там,
-    // где мы вызывали setFormSubmitHandler, что не всегда удобно
-
-    // 1. Поэтому колбэк мы запишем во внутреннее свойство
     this._callback.formSubmit = callback;
-    // 2. В addEventListener передадим абстрактный обработчик
     this.getElement().addEventListener('submit', this._formSubmitHandler);
   }
 
   setCloseButtonClickHandler(callback) {
     this._callback.closeButtonClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeButtonClickHandler);
+  }
+
+  static parseEventToData(event) {
+    const potentialOffers = getOffersByType(event.type);
+    return Object.assign(
+      {},
+      event,
+      {
+        isOffers: potentialOffers.length > 0,
+        isDestination: event.destination !== null,
+        isPictures: event.destination.pictures.length > 0,
+      },
+    );
+  }
+
+  static parseDataToEvent(data) {
+    data = Object.assign({}, data);
+
+    delete data.isOffers;
+    delete data.isDestination;
+    delete data.isPictures;
+
+    return data;
   }
 }

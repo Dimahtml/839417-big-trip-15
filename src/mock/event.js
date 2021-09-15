@@ -6,7 +6,7 @@ import {nanoid} from 'nanoid';
 
 const generateType = () => {
   const types = [
-    'Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant',
+    'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant',
   ];
 
   const randomIndex = getRandomInteger(0, types.length - 1);
@@ -31,9 +31,8 @@ const generateBasePrice = () => getRandomInteger(1, 50) * 10;
 
 export const generateEvent = () => {
   const {dateFrom, dateTo} = generateDate();
-  const {offers} = generateOffers();
   const type = generateType();
-
+  const offers = generateOffers(type).offers;
   return {
     id: nanoid(),
     basePrice: generateBasePrice(),

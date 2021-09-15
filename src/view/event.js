@@ -1,10 +1,11 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract.js';
+import {generateOffers} from '../mock/offer';
 
 const createEventOffer = (event = {}) => {
-  const {offers} = event;
+  const potentialOffers = generateOffers(event.type);
 
-  return offers.map((offer) =>
+  return potentialOffers.offers.map((offer) =>
     `<li class="event__offer">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
