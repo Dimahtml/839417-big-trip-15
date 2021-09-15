@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import {getOffersByType} from '../utils/event.js';
 import {Types} from '../const.js';
 import {generateOffers} from '../mock/offer.js';
-import AbstractView from './abstract.js';
+import SmartView from './smart.js';
 // Три функции для отрисовки блока OFFERS
 const createOfferName = (offer = {}) => {
   let offerName = '';
@@ -159,7 +159,7 @@ const createEventEditTemplate = (data) => {
   </form>`;
 };
 
-export default class EventEdit extends AbstractView {
+export default class EventEdit extends SmartView {
   constructor(event) {
     super();
     this._data = EventEdit.parseEventToData(event);
@@ -178,34 +178,6 @@ export default class EventEdit extends AbstractView {
 
   getTemplate() {
     return createEventEditTemplate(this._data);
-  }
-
-  updateData(update, justDataUpdating) {
-    if (!update) {
-      return;
-    }
-    this._data = Object.assign(
-      {},
-      this._data,
-      update,
-    );
-    if (justDataUpdating) {
-      return;
-    }
-    this.updateElement();
-  }
-
-  updateElement() {
-    const prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-
-    this.restoreHandlers();
   }
 
   restoreHandlers() {
