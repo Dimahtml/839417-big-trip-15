@@ -3,6 +3,10 @@ import {getOffersByType} from '../utils/event.js';
 import {Types} from '../const.js';
 import {generateOffers} from '../mock/offer.js';
 import SmartView from './smart.js';
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+
 // Три функции для отрисовки блока OFFERS
 const createOfferName = (offer = {}) => {
   let offerName = '';
