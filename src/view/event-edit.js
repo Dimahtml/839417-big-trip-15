@@ -212,7 +212,6 @@ export default class EventEdit extends SmartView {
       this._datepickerTo.destroy();
       this._datepickerTo = null;
     }
-
     this._datepickerFrom = flatpickr(
       this.getElement().querySelector('input[name="event-start-time"]'),
       {
@@ -221,6 +220,7 @@ export default class EventEdit extends SmartView {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
         defaultDate: this._data.dateFrom,
+        maxDate: this._data.dateTo,
         onChange: this._dateFromChangeHandler,
       },
     );
@@ -233,6 +233,7 @@ export default class EventEdit extends SmartView {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
         defaultDate: this._data.dateTo,
+        minDate: this._data.dateFrom,
         onChange: this._dateToChangeHandler,
       },
     );
