@@ -167,6 +167,8 @@ export default class EventEdit extends SmartView {
   constructor(event) {
     super();
     this._data = EventEdit.parseEventToData(event);
+    this._datepicker = null;
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
 
@@ -178,6 +180,7 @@ export default class EventEdit extends SmartView {
     this._offerChangeCheckboxHandler = this._offerChangeCheckboxHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setDatepicker();
   }
 
   reset(event) {
@@ -192,8 +195,47 @@ export default class EventEdit extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setCloseButtonClickHandler(this._callback.closeButtonClick);
+  }
+
+  _setDatepicker() {
+    if (this._datepickerFrom) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      this._datepickerFrom.destroy();
+      this._datepickerFrom = null;
+    }
+
+    if (this._datepickerTo) {
+      this._datepickerTo.destroy();
+      this._datepickerTo = null;
+    }
+
+    this._datepickerFrom = flatpickr(
+      this.getElement().querySelector('input[name="event-start-time"]'),
+      {
+        // eslint-disable-next-line camelcase
+        time_24hr: true,
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._data.dateFrom,
+        onChange: this._dateFromChangeHandler,
+      },
+    );
+
+    this._datepickerTo = flatpickr(
+      this.getElement().querySelector('input[name="event-end-time"]'),
+      {
+        // eslint-disable-next-line camelcase
+        time_24hr: true,
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._data.dateTo,
+        onChange: this._dateToChangeHandler,
+      },
+    );
   }
 
   _setInnerHandlers() {
@@ -208,12 +250,6 @@ export default class EventEdit extends SmartView {
     this.getElement()
       .querySelector('.event__input--destination')
       .addEventListener('change', this._destinationChangeHandler);
-    this.getElement()
-      .querySelector('input[name="event-start-time"]')
-      .addEventListener('change', this._dateFromChangeHandler);
-    this.getElement()
-      .querySelector('input[name="event-end-time"]')
-      .addEventListener('change', this._dateToChangeHandler);
     this.getElement()
       .querySelector('.event__input--price')
       .addEventListener('change', this._basePriceChangeHandler);
@@ -258,17 +294,15 @@ export default class EventEdit extends SmartView {
     }, true);
   }
 
-  _dateFromChangeHandler(evt) {
-    evt.preventDefault();
+  _dateFromChangeHandler([dateFrom]) {
     this.updateData({
-      dateFrom: evt.target.value,
+      dateFrom: dateFrom,
     }, true);
   }
 
-  _dateToChangeHandler(evt) {
-    evt.preventDefault();
+  _dateToChangeHandler([dateTo]) {
     this.updateData({
-      dateTo: evt.target.value,
+      dateTo: dateTo,
     }, true);
   }
 
