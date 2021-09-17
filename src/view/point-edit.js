@@ -7,6 +7,8 @@ import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
+const DESTINATIONS = ['Amsterdam', 'Paris', 'London', 'Praga', 'Lisbon', 'Marselle', 'Rome', 'Munchen', 'Geneva', 'Stambul'];
+
 const BLANK_POINT = {
   basePrice: 0,
   dateFrom: Date.now(),
@@ -116,6 +118,9 @@ const createEventSectionDestination = (point, isPictures) => (
     ${isPictures ? createPicturesContainerTemplate(point) : ''}
   </section>`
 );
+// Функция для отрисовки вариантов городов
+const createDestinationOptions = (destinations) =>
+  destinations.map((destination) =>`<option value="${destination}"></option>`).join('');
 // функция для отрисовки всей формы EVENT EDIT
 const createPointEditTemplate = (data) => {
   const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures} = data;
@@ -141,10 +146,8 @@ const createPointEditTemplate = (data) => {
           ${type}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
-        <datalist id="destination-list-1">
-          <option value="Amsterdam"></option>
-          <option value="Geneva"></option>
-          <option value="Chamonix"></option>
+        <datalist id="destination-list-1" required>
+          ${createDestinationOptions(DESTINATIONS)}
         </datalist>
       </div>
 
@@ -161,7 +164,7 @@ const createPointEditTemplate = (data) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+        <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}">
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -312,6 +315,15 @@ export default class PointEdit extends SmartView {
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
+    const input = this.getElement().querySelector('.event__input--destination');
+
+    if (!DESTINATIONS.includes(evt.target.value)) {
+      input.setCustomValidity('НЕТ ТАКОЙ БУКВЫ! ПЕРЕХОД ХОДА! КРУТИТЕ БАРАБАН!');
+      input.reportValidity();
+      return;
+    }
+    input.setCustomValidity('');
+    input.reportValidity();
     this.updateData({
       destination: {
         description: this._data.destination.description,
