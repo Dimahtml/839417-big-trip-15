@@ -11,7 +11,8 @@ import {sortTime, sortPrice} from '../utils/point.js';
 import {SortType} from '../const.js';
 
 export default class Trip {
-  constructor(tripContainer) {
+  constructor(tripContainer, pointsModel) {
+    this._pointsModel = pointsModel;
     this._tripContainer = tripContainer;
     this._pointPresenter = new Map();
     this._currentSortType = SortType.DEFAULT;
@@ -32,6 +33,10 @@ export default class Trip {
     this._sourcedTripEvents = tripPoints.slice();
 
     this._renderTrip();
+  }
+
+  _getPoints() {
+    return this._pointsModel.getPoints();
   }
 
   _handleModeChange() {
