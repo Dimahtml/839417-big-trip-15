@@ -1,12 +1,12 @@
 import AbstractView from './abstract.js';
 
-const createEventsContainerTemplate = () => (
+const createPointsContainerTemplate = () => (
   `<ul class="trip-events__list">
   </ul>`
 );
 
 export default class Trip extends AbstractView {
   getTemplate() {
-    return createEventsContainerTemplate();
+    return createPointsContainerTemplate();
   }
 }

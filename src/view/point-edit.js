@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {getOffersByType} from '../utils/event.js';
+import {getOffersByType} from '../utils/point.js';
 import {Types} from '../const.js';
 import {generateOffers} from '../mock/offer.js';
 import SmartView from './smart.js';
@@ -39,9 +39,9 @@ const createOfferName = (offer = {}) => {
   return offerName;
 };
 
-const createEventOfferSelector = (event = {}) => {
-  const potentialOffers = generateOffers(event.type);
-  const currentOffersTitles = event.offers.map((item) => item.title);
+const createEventOfferSelector = (point = {}) => {
+  const potentialOffers = generateOffers(point.type);
+  const currentOffersTitles = point.offers.map((item) => item.title);
   // const potentialOffersTitles = potentialOffers.offers.map((item) => item.title);
 
   return potentialOffers.offers.map((offer) => {
@@ -69,8 +69,8 @@ const createEventSectionOffers = (data) => (
   </section>`
 );
 // Функция отрисовки одного элемента ТИП ПОЕЗДКИ
-const createEventTypeItem = (eventTypes) => {
-  const types = Object.values(eventTypes);
+const createEventTypeItem = (pointTypes) => {
+  const types = Object.values(pointTypes);
 
   return types.map((type) =>
     `<div class="event__type-item">
@@ -79,31 +79,31 @@ const createEventTypeItem = (eventTypes) => {
     </div>`).join('');
 };
 // Три функции для отрисовки блока DESTINATION
-const createPicturesItemTemplate = (event) => {
-  const pictures = event.destination.pictures;
+const createPicturesItemTemplate = (point) => {
+  const pictures = point.destination.pictures;
   return pictures.map((picture) =>
     `<img class="event__photo" src="${picture.src}"
       alt="${picture}">
     </img>`).join('');
 };
 
-const createPicturesContainerTemplate = (event) => (
+const createPicturesContainerTemplate = (point) => (
   `<div class="event__photos-container">
     <div class="event__photos-tape">
-      ${createPicturesItemTemplate(event)}
+      ${createPicturesItemTemplate(point)}
     </div>
   </div>`
 );
 
-const createEventSectionDestination = (event, isPictures) => (
+const createEventSectionDestination = (point, isPictures) => (
   `<section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">${event.destination.description}</p>
-    ${isPictures ? createPicturesContainerTemplate(event) : ''}
+    <p class="event__destination-description">${point.destination.description}</p>
+    ${isPictures ? createPicturesContainerTemplate(point) : ''}
   </section>`
 );
 // функция для отрисовки всей формы EVENT EDIT
-const createEventEditTemplate = (data) => {
+const createPointEditTemplate = (data) => {
   const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures} = data;
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -163,10 +163,10 @@ const createEventEditTemplate = (data) => {
   </form>`;
 };
 
-export default class EventEdit extends SmartView {
-  constructor(event) {
+export default class PointEdit extends SmartView {
+  constructor(point) {
     super();
-    this._data = EventEdit.parseEventToData(event);
+    this._data = PointEdit.parsePointToData(point);
     this._datepicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -183,14 +183,14 @@ export default class EventEdit extends SmartView {
     this._setDatepicker();
   }
 
-  reset(event) {
+  reset(point) {
     this.updateData(
-      EventEdit.parseEventToData(event),
+      PointEdit.parsePointToData(point),
     );
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._data);
+    return createPointEditTemplate(this._data);
   }
 
   restoreHandlers() {
@@ -316,7 +316,7 @@ export default class EventEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(EventEdit.parseDataToEvent(this._data));
+    this._callback.formSubmit(PointEdit.parseDataToEvent(this._data));
   }
 
   _closeButtonClickHandler(evt) {
@@ -334,15 +334,15 @@ export default class EventEdit extends SmartView {
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeButtonClickHandler);
   }
 
-  static parseEventToData(event) {
-    const potentialOffers = getOffersByType(event.type);
+  static parsePointToData(point) {
+    const potentialOffers = getOffersByType(point.type);
     return Object.assign(
       {},
-      event,
+      point,
       {
         isOffers: potentialOffers.length > 0,
-        isDestination: event.destination !== null,
-        isPictures: event.destination.pictures.length > 0,
+        isDestination: point.destination !== null,
+        isPictures: point.destination.pictures.length > 0,
       },
     );
   }
