@@ -22,7 +22,7 @@ const tripEventsElement = document.querySelector('.trip-events');
 
 render(siteMenuElement, new SiteMenuView(), RenderPosition.BEFOREEND);
 
-const tripPresenter = new TripPresenter(tripEventsElement, pointsModel);
+const tripPresenter = new TripPresenter(tripEventsElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteFilterElement, filterModel, pointsModel);
 
 filterPresenter.init();
