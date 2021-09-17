@@ -328,7 +328,7 @@ export default class PointEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(PointEdit.parseDataToEvent(this._data));
+    this._callback.formSubmit(PointEdit.parseDataToPoint(this._data));
   }
 
   _closeButtonClickHandler(evt) {

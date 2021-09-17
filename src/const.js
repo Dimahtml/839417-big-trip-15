@@ -106,3 +106,9 @@ export const OFFERS_BY_TYPES = {
   SIGHTSEEING: [],
   RESTAURANT: [],
 };
+
+export const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
+};
