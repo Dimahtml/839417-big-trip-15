@@ -7,6 +7,21 @@ import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
+const BLANK_POINT = {
+  basePrice: 0,
+  dateFrom: Date.now(),
+  dateTo: Date.now(),
+  destination:
+    {
+      description: '',
+      name: '',
+      pictures: [],
+    },
+  isFavorite: false,
+  offers: [],
+  type: 'taxi',
+};
+
 // Три функции для отрисовки блока OFFERS
 const createOfferName = (offer = {}) => {
   let offerName = '';
@@ -42,7 +57,6 @@ const createOfferName = (offer = {}) => {
 const createEventOfferSelector = (point = {}) => {
   const potentialOffers = generateOffers(point.type);
   const currentOffersTitles = point.offers.map((item) => item.title);
-  // const potentialOffersTitles = potentialOffers.offers.map((item) => item.title);
 
   return potentialOffers.offers.map((offer) => {
     let isChecked = false;
@@ -164,7 +178,7 @@ const createPointEditTemplate = (data) => {
 };
 
 export default class PointEdit extends SmartView {
-  constructor(point) {
+  constructor(point = BLANK_POINT) {
     super();
     this._data = PointEdit.parsePointToData(point);
     this._datepicker = null;

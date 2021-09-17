@@ -4,6 +4,7 @@ import SortView from '../view/sort.js';
 import PointsListView from '../view/points-list.js';
 import NoPointView from '../view/no-point.js';
 import PointPresenter from './point.js';
+import PointNewPresenter from './point-new.js';
 import {filter} from '../utils/filter.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortTime, sortPrice} from '../utils/point.js';
@@ -33,11 +34,19 @@ export default class Trip {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+
+    this._pointNewPresenter = new PointNewPresenter(this._pointsListComponent, this._handleViewAction);
   }
 
   init() {
     this._renderSort();
     this._renderTrip();
+  }
+
+  createPoint() {
+    this._currentSortType = SortType.DEFAULT;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._pointNewPresenter.init();
   }
 
   _getPoints() {
@@ -56,6 +65,7 @@ export default class Trip {
   }
 
   _handleModeChange() {
+    this._pointNewPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.resetView());
   }
 
@@ -136,6 +146,7 @@ export default class Trip {
   }
 
   _clearPointList() {
+    this._pointNewPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter.clear();
 
