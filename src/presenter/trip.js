@@ -30,6 +30,7 @@ export default class Trip {
   }
 
   init() {
+    this._renderSort();
     this._renderTrip();
   }
 
@@ -65,14 +66,15 @@ export default class Trip {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка (например, когда поменялось описание)
         this._pointPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
+        this._clearPointList();
+        this._renderTrip();
         break;
       case UpdateType.MAJOR:
-        // - обновить всю доску (например, при переключении фильтра)
+        this._clearPointList({resetSortType: true});
+        this._renderTrip();
         break;
     }
   }
@@ -83,13 +85,21 @@ export default class Trip {
     }
 
     this._currentSortType = sortType;
-    this._clearPointList();
+    this._clearPointList({resetSortType: true});
     this._renderTrip();
   }
 
   _renderSort() {
-    render(this._tripContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
+    }
+
+    this._sortComponent = new SortView(this._currentSortType);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+
+    render(this._tripContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderPoint(point) {
@@ -103,13 +113,15 @@ export default class Trip {
   }
 
   _renderTrip() {
-    if (this._getPoints().length > 0) {
-      this._renderSort();
-      render(this._tripContainer, this._pointsListComponent, RenderPosition.BEFOREEND);
-      this._getPoints().forEach((point) =>  this._renderPoint(point));
-    } else {
+    const points = this._getPoints();
+    const pointCount = points.length;
+
+    if (pointCount === 0) {
       this._renderNoPoint();
+      return;
     }
+    render(this._tripContainer, this._pointsListComponent, RenderPosition.BEFOREEND);
+    this._getPoints().forEach((point) =>  this._renderPoint(point));
   }
 
   _clearPointList() {
