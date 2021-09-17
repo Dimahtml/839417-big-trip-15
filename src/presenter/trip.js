@@ -28,14 +28,18 @@ export default class Trip {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
-  init(tripPoints) {
-    this._tripPoints = tripPoints.slice();
-    this._sourcedTripEvents = tripPoints.slice();
-
+  init() {
     this._renderTrip();
   }
 
   _getPoints() {
+    switch (this._currentSortType) {
+      case SortType.TIME:
+        return this._pointsModel.getPoints().slice().sort(sortTime);
+      case SortType.PRICE:
+        return this._pointsModel.getPoints().slice().sort(sortPrice);
+    }
+
     return this._pointsModel.getPoints();
   }
 
@@ -46,22 +50,8 @@ export default class Trip {
   _handlePointChange(updatedPoint) {
     this._tripPoints = updateItem(this._tripPoints, updatedPoint);
     this._sourcedTripEvents = updateItem(this._sourcedTripEvents, updatedPoint);
+    // Здесь будем вызывать обновление модели
     this._pointPresenter.get(updatedPoint.id).init(updatedPoint);
-  }
-
-  _sortPoints(sortType) {
-    this._currentSortType = sortType;
-
-    switch (this._currentSortType) {
-      case SortType.TIME:
-        this._tripPoints.sort(sortTime);
-        break;
-      case SortType.PRICE:
-        this._tripPoints.sort(sortPrice);
-        break;
-      default:
-        this._tripPoints = this._sourcedTripEvents.slice();
-    }
   }
 
   _handleSortTypeChange(sortType) {
@@ -69,7 +59,7 @@ export default class Trip {
       return;
     }
 
-    this._sortPoints(sortType);
+    this._currentSortType = sortType;
     this._clearPointList();
     this._renderTrip();
   }
@@ -90,10 +80,10 @@ export default class Trip {
   }
 
   _renderTrip() {
-    if (this._tripPoints.length > 0) {
+    if (this._getPoints().length > 0) {
       this._renderSort();
       render(this._tripContainer, this._pointsListComponent, RenderPosition.BEFOREEND);
-      this._tripPoints.forEach((event) =>  this._renderPoint(event));
+      this._getPoints().forEach((point) =>  this._renderPoint(point));
     } else {
       this._renderNoPoint();
     }

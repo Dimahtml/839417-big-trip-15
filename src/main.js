@@ -20,4 +20,4 @@ render(siteMenuElement, new SiteMenuView(), RenderPosition.BEFOREEND);
 render(siteFilterElement, new FilterView(), RenderPosition.BEFOREEND);
 
 const tripPresenter = new TripPresenter(tripEventsElement, pointsModel);
-tripPresenter.init(points);
+tripPresenter.init();
