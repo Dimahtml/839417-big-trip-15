@@ -1,11 +1,28 @@
 import dayjs from 'dayjs';
-import {getOffersByType} from '../utils/event.js';
+import {getOffersByType} from '../utils/point.js';
 import {Types} from '../const.js';
 import {generateOffers} from '../mock/offer.js';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+
+const DESTINATIONS = ['Amsterdam', 'Paris', 'London', 'Praga', 'Lisbon', 'Marselle', 'Rome', 'Munchen', 'Geneva', 'Stambul'];
+
+const BLANK_POINT = {
+  basePrice: 0,
+  dateFrom: Date.now(),
+  dateTo: Date.now(),
+  destination:
+    {
+      description: '',
+      name: '',
+      pictures: [],
+    },
+  isFavorite: false,
+  offers: [],
+  type: 'taxi',
+};
 
 // Три функции для отрисовки блока OFFERS
 const createOfferName = (offer = {}) => {
@@ -39,10 +56,9 @@ const createOfferName = (offer = {}) => {
   return offerName;
 };
 
-const createEventOfferSelector = (event = {}) => {
-  const potentialOffers = generateOffers(event.type);
-  const currentOffersTitles = event.offers.map((item) => item.title);
-  // const potentialOffersTitles = potentialOffers.offers.map((item) => item.title);
+const createEventOfferSelector = (point = {}) => {
+  const potentialOffers = generateOffers(point.type);
+  const currentOffersTitles = point.offers.map((item) => item.title);
 
   return potentialOffers.offers.map((offer) => {
     let isChecked = false;
@@ -69,8 +85,8 @@ const createEventSectionOffers = (data) => (
   </section>`
 );
 // Функция отрисовки одного элемента ТИП ПОЕЗДКИ
-const createEventTypeItem = (eventTypes) => {
-  const types = Object.values(eventTypes);
+const createEventTypeItem = (pointTypes) => {
+  const types = Object.values(pointTypes);
 
   return types.map((type) =>
     `<div class="event__type-item">
@@ -79,31 +95,34 @@ const createEventTypeItem = (eventTypes) => {
     </div>`).join('');
 };
 // Три функции для отрисовки блока DESTINATION
-const createPicturesItemTemplate = (event) => {
-  const pictures = event.destination.pictures;
+const createPicturesItemTemplate = (point) => {
+  const pictures = point.destination.pictures;
   return pictures.map((picture) =>
     `<img class="event__photo" src="${picture.src}"
       alt="${picture}">
     </img>`).join('');
 };
 
-const createPicturesContainerTemplate = (event) => (
+const createPicturesContainerTemplate = (point) => (
   `<div class="event__photos-container">
     <div class="event__photos-tape">
-      ${createPicturesItemTemplate(event)}
+      ${createPicturesItemTemplate(point)}
     </div>
   </div>`
 );
 
-const createEventSectionDestination = (event, isPictures) => (
+const createEventSectionDestination = (point, isPictures) => (
   `<section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">${event.destination.description}</p>
-    ${isPictures ? createPicturesContainerTemplate(event) : ''}
+    <p class="event__destination-description">${point.destination.description}</p>
+    ${isPictures ? createPicturesContainerTemplate(point) : ''}
   </section>`
 );
+// Функция для отрисовки вариантов городов
+const createDestinationOptions = (destinations) =>
+  destinations.map((destination) =>`<option value="${destination}"></option>`).join('');
 // функция для отрисовки всей формы EVENT EDIT
-const createEventEditTemplate = (data) => {
+const createPointEditTemplate = (data) => {
   const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures} = data;
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -127,10 +146,8 @@ const createEventEditTemplate = (data) => {
           ${type}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
-        <datalist id="destination-list-1">
-          <option value="Amsterdam"></option>
-          <option value="Geneva"></option>
-          <option value="Chamonix"></option>
+        <datalist id="destination-list-1" required>
+          ${createDestinationOptions(DESTINATIONS)}
         </datalist>
       </div>
 
@@ -147,7 +164,7 @@ const createEventEditTemplate = (data) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+        <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}">
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -163,15 +180,15 @@ const createEventEditTemplate = (data) => {
   </form>`;
 };
 
-export default class EventEdit extends SmartView {
-  constructor(event) {
+export default class PointEdit extends SmartView {
+  constructor(point = BLANK_POINT) {
     super();
-    this._data = EventEdit.parseEventToData(event);
+    this._data = PointEdit.parsePointToData(point);
     this._datepicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
-
     this._typeToggleHandler = this._typeToggleHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
@@ -183,14 +200,25 @@ export default class EventEdit extends SmartView {
     this._setDatepicker();
   }
 
-  reset(event) {
+  // Перегружаем метод родителя removeElement,
+  // чтобы при удалении удалялся более ненужный календарь
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+  }
+
+  reset(point) {
     this.updateData(
-      EventEdit.parseEventToData(event),
+      PointEdit.parsePointToData(point),
     );
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._data);
+    return createPointEditTemplate(this._data);
   }
 
   restoreHandlers() {
@@ -198,6 +226,7 @@ export default class EventEdit extends SmartView {
     this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setCloseButtonClickHandler(this._callback.closeButtonClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setDatepicker() {
@@ -286,6 +315,15 @@ export default class EventEdit extends SmartView {
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
+    const input = this.getElement().querySelector('.event__input--destination');
+
+    if (!DESTINATIONS.includes(evt.target.value)) {
+      input.setCustomValidity('НЕТ ТАКОЙ БУКВЫ! ПЕРЕХОД ХОДА! КРУТИТЕ БАРАБАН!');
+      input.reportValidity();
+      return;
+    }
+    input.setCustomValidity('');
+    input.reportValidity();
     this.updateData({
       destination: {
         description: this._data.destination.description,
@@ -316,7 +354,7 @@ export default class EventEdit extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(EventEdit.parseDataToEvent(this._data));
+    this._callback.formSubmit(PointEdit.parseDataToPoint(this._data));
   }
 
   _closeButtonClickHandler(evt) {
@@ -334,20 +372,31 @@ export default class EventEdit extends SmartView {
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeButtonClickHandler);
   }
 
-  static parseEventToData(event) {
-    const potentialOffers = getOffersByType(event.type);
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(PointEdit.parseDataToPoint(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
+  }
+
+
+  static parsePointToData(point) {
+    const potentialOffers = getOffersByType(point.type);
     return Object.assign(
       {},
-      event,
+      point,
       {
         isOffers: potentialOffers.length > 0,
-        isDestination: event.destination !== null,
-        isPictures: event.destination.pictures.length > 0,
+        isDestination: point.destination !== null,
+        isPictures: point.destination.pictures.length > 0,
       },
     );
   }
 
-  static parseDataToEvent(data) {
+  static parseDataToPoint(data) {
     data = Object.assign({}, data);
 
     delete data.isOffers;

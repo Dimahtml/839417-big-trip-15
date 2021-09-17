@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract.js';
-import {generateOffers} from '../mock/offer';
+import {generateOffers} from '../mock/offer.js';
 
-const createEventOffer = (event = {}) => {
-  const potentialOffers = generateOffers(event.type);
+const createPointOffer = (point = {}) => {
+  const potentialOffers = generateOffers(point.type);
 
   return potentialOffers.offers.map((offer) =>
     `<li class="event__offer">
@@ -13,7 +13,7 @@ const createEventOffer = (event = {}) => {
     </li>`).join('');
 };
 
-const createEventFavoriteIcon = (isFavorite = false) => (
+const createPointFavoriteIcon = (isFavorite = false) => (
   `<button class="event__favorite-btn ${isFavorite === true ? 'event__favorite-btn--active' : ''}" type="button">
     <span class="visually-hidden">Add to favorite</span>
     <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -22,8 +22,8 @@ const createEventFavoriteIcon = (isFavorite = false) => (
   </button>`
 );
 
-const createEventTemplate = (event) => {
-  const {dateFrom, dateTo, basePrice} = event;
+const createPointTemplate = (point) => {
+  const {dateFrom, dateTo, basePrice} = point;
   const month = dayjs(dateFrom).format('MMM DD');
   const startTime = dayjs(dateFrom).format('HH:mm');
   const endTime = dayjs(dateTo).format('HH:mm');
@@ -33,9 +33,9 @@ const createEventTemplate = (event) => {
     <div class="event">
       <time class="event__date" datetime="${dayjs(dateFrom).format('YYYY-MM-DD')}">${month}</time>
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/${event.type}.png" alt="Event type icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${point.type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${event.type} ${event.destination.name}</h3>
+      <h3 class="event__title">${point.type} ${point.destination.name}</h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="${dayjs(dateFrom).format('YYYY-MM-DDTHH:mm')}">${startTime}</time>
@@ -49,9 +49,9 @@ const createEventTemplate = (event) => {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        ${createEventOffer(event)}
+        ${createPointOffer(point)}
       </ul>
-      ${createEventFavoriteIcon(event.isFavorite)}
+      ${createPointFavoriteIcon(point.isFavorite)}
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>
@@ -59,17 +59,17 @@ const createEventTemplate = (event) => {
   </li>`;
 };
 
-export default class Event extends AbstractView {
-  constructor(event) {
+export default class Point extends AbstractView {
+  constructor(point) {
     super();
-    this._event = event;
+    this._point = point;
 
     this._openButtonClickHandler = this._openButtonClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createEventTemplate(this._event);
+    return createPointTemplate(this._point);
   }
 
   _favoriteClickHandler(evt) {

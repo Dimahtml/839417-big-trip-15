@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
-import {generateOffers} from './offer';
-import {generateDestination} from './destination';
+import {generateOffers} from './offer.js';
+import {generateDestination} from './destination.js';
 import {getRandomInteger} from '../utils/common.js';
 import {nanoid} from 'nanoid';
 
@@ -29,7 +29,7 @@ const generateDate = () => {
 
 const generateBasePrice = () => getRandomInteger(1, 50) * 10;
 
-export const generateEvent = () => {
+export const generatePoint = () => {
   const {dateFrom, dateTo} = generateDate();
   const type = generateType();
   const offers = generateOffers(type).offers;
