@@ -2,6 +2,7 @@ import PointView from '../view/point.js';
 import PointEditView from '../view/point-edit.js';
 import {render, RenderPosition, replace, remove} from '../utils/render.js';
 import {UserAction, UpdateType} from '../const.js';
+import {isDatesEqual} from '../utils/point.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -23,6 +24,7 @@ export default class Point {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(point, types) {
@@ -38,6 +40,7 @@ export default class Point {
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._pointEditComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._pointsListContainer, this._pointComponent, RenderPosition.BEFOREEND);
@@ -111,12 +114,29 @@ export default class Point {
     );
   }
 
-  _handleFormSubmit(point) {
+  _handleFormSubmit(update) {
+    // Проверяем, поменялись ли в задаче данные, которые попадают под фильтрацию,
+    // а значит требуют перерисовки списка - если таких нет, это PATCH-обновление
+    const isDateFromEqual = isDatesEqual(this._point.dateFrom, update.dateFrom);
+    const isDateToEqual = isDatesEqual(this._point.dateTo, update.dateTo);
+    const isPriceEqual = this._point.basePrice === update.basePrice;
+    const isDestinationEqual = this._point.destination.name === update.destination.name;
+
+    const isMinorUpdate = !isDateFromEqual || !isDateToEqual || !isPriceEqual || !isDestinationEqual;
+
     this._changeData(
       UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      update,
+    );
+    this._rollDownPoint();
+  }
+
+  _handleDeleteClick(point) {
+    this._changeData(
+      UserAction.DELETE_POINT,
       UpdateType.MINOR,
       point,
     );
-    this._rollDownPoint();
   }
 }

@@ -55,3 +55,7 @@ export const getOffersByType = (type) => {
   }
   return offers;
 };
+
+export const isDatesEqual = (dateA, dateB) => ((dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D'));
+
+export const calculateDuration = (point) => point.dateFrom - point.dateTo;
