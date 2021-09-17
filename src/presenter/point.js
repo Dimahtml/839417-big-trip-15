@@ -108,8 +108,8 @@ export default class Point {
     );
   }
 
-  _handleFormSubmit(event) {
-    this._changeData(event);
+  _handleFormSubmit(point) {
+    this._changeData(point);
     this._rollDownPoint();
   }
 }

@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import AbstractView from './abstract.js';
 import {generateOffers} from '../mock/offer.js';
 
-const createEventOffer = (point = {}) => {
+const createPointOffer = (point = {}) => {
   const potentialOffers = generateOffers(point.type);
 
   return potentialOffers.offers.map((offer) =>
@@ -13,7 +13,7 @@ const createEventOffer = (point = {}) => {
     </li>`).join('');
 };
 
-const createEventFavoriteIcon = (isFavorite = false) => (
+const createPointFavoriteIcon = (isFavorite = false) => (
   `<button class="event__favorite-btn ${isFavorite === true ? 'event__favorite-btn--active' : ''}" type="button">
     <span class="visually-hidden">Add to favorite</span>
     <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -49,9 +49,9 @@ const createPointTemplate = (point) => {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        ${createEventOffer(point)}
+        ${createPointOffer(point)}
       </ul>
-      ${createEventFavoriteIcon(point.isFavorite)}
+      ${createPointFavoriteIcon(point.isFavorite)}
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>
@@ -59,7 +59,7 @@ const createPointTemplate = (point) => {
   </li>`;
 };
 
-export default class Event extends AbstractView {
+export default class Point extends AbstractView {
   constructor(point) {
     super();
     this._point = point;
