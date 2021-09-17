@@ -6,7 +6,7 @@ import FilterModel from './model/filter.js';
 import {generatePoint} from './mock/point.js';
 import {render, RenderPosition} from './utils/render.js';
 
-const POINT_COUNT = 10;
+const POINT_COUNT = 5;
 
 const points = new Array(POINT_COUNT).fill().map(generatePoint);
 

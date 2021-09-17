@@ -5,9 +5,9 @@ import PointsListView from '../view/points-list.js';
 import NoPointView from '../view/no-point.js';
 import PointPresenter from './point.js';
 import {filter} from '../utils/filter.js';
-import {render, RenderPosition} from '../utils/render.js';
+import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortTime, sortPrice} from '../utils/point.js';
-import {SortType, UpdateType, UserAction} from '../const.js';
+import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
 
 
 export default class Trip {
@@ -16,7 +16,10 @@ export default class Trip {
     this._filterModel = filterModel;
     this._tripContainer = tripContainer;
     this._pointPresenter = new Map();
+    this._filterType = FilterType.EVERYTHING;
     this._currentSortType = SortType.DEFAULT;
+
+    this._noPointComponent = null;
 
     this._siteMenuComponent = new SiteMenuView();
     this._filterComponent = new FilterView();
@@ -38,9 +41,9 @@ export default class Trip {
   }
 
   _getPoints() {
-    const filterType = this._filterModel.getFilter();
+    this._filterType = this._filterModel.getFilter();
     const points = this._pointsModel.getPoints();
-    const filtredPoints = filter[filterType](points);
+    const filtredPoints = filter[this._filterType](points);
 
     switch (this._currentSortType) {
       case SortType.TIME:
@@ -116,6 +119,7 @@ export default class Trip {
   }
 
   _renderNoPoint() {
+    this._noPointComponent = new NoPointView(this._filterType);
     render(this._tripContainer, this._noPointComponent, RenderPosition.BEFOREEND);
   }
 
@@ -134,5 +138,9 @@ export default class Trip {
   _clearPointList() {
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter.clear();
+
+    if (this._noPointComponent) {
+      remove(this._noPointComponent);
+    }
   }
 }
