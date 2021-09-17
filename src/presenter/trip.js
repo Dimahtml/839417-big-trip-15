@@ -50,13 +50,13 @@ export default class Trip {
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
-      case UserAction.UPDATE_TASK:
+      case UserAction.UPDATE_POINT:
         this._pointsModel.updatePoint(updateType, update);
         break;
-      case UserAction.ADD_TASK:
+      case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);
         break;
-      case UserAction.DELETE_TASK:
+      case UserAction.DELETE_POINT:
         this._pointsModel.deletePoint(updateType, update);
         break;
     }
