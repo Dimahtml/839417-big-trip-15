@@ -114,7 +114,7 @@ export const FilterType = {
 };
 
 export const MenuItem = {
-  ADD_NEW_POINT: 'add_new_point',
-  TABLE: 'table',
-  STATS: 'stats',
+  ADD_NEW_POINT: 'site-menu-add_new_point',
+  TABLE: 'site-menu-table',
+  STATS: 'site-menu-stats',
 };

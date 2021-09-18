@@ -41,12 +41,26 @@ export default class Trip {
   init() {
     this._renderSort();
     this._renderTrip();
+
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
-  createPoint() {
+  destroy() {
+    this._currentSortType = SortType.DEFAULT;
+    this._clearPointList({resetRenderedPointCount: true, resetSortType: true});
+
+    remove(this._pointsListComponent);
+    remove(this._sortComponent);
+
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+  }
+
+  createPoint(callback) {
     this._currentSortType = SortType.DEFAULT;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._pointNewPresenter.init();
+    this._pointNewPresenter.init(callback);
   }
 
   _getPoints() {

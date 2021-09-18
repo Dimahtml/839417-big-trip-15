@@ -3,8 +3,8 @@ import {MenuItem} from '../const.js';
 
 const createSiteMenuTemplate = () => (
   `<nav class="trip-controls__trip-tabs  trip-tabs">
-    <a class="trip-tabs__btn  trip-tabs__btn--active" href="#" id='site-menu-table'>Table</a>
-    <a class="trip-tabs__btn" href="#" id='site-menu-stats'>Stats</a>
+    <a class="trip-tabs__btn  trip-tabs__btn--active" href="#" id='${MenuItem.TABLE}'>Table</a>
+    <a class="trip-tabs__btn" href="#" id='${MenuItem.STATS}'>Stats</a>
   </nav>`
 );
 
@@ -21,12 +21,12 @@ export default class SiteMenu extends AbstractView {
 
   _menuClickHandler(evt) {
     evt.preventDefault();
-    this._callback.menuClick(evt.target.value);
+    this._callback.menuClick(evt.target.id);
   }
 
   setMenuClickHandler(callback) {
     this._callback.menuClick = callback;
-    this.getElement().addEventListener('change', this._menuClickHandler);
+    this.getElement().addEventListener('click', this._menuClickHandler);
   }
 
   setMenuItem(menuItem) {
