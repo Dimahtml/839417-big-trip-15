@@ -5,6 +5,7 @@ import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
 import {generatePoint} from './mock/point.js';
 import {render, RenderPosition} from './utils/render.js';
+import {MenuItem} from './const.js';
 
 const POINT_COUNT = 5;
 
@@ -15,15 +16,36 @@ pointsModel.setPoints(points);
 
 const filterModel = new FilterModel();
 
-
 const siteMenuElement = document.querySelector('.trip-controls__navigation');
 const siteFilterElement = document.querySelector('.trip-controls__filters');
 const tripEventsElement = document.querySelector('.trip-events');
+const siteMenuComponent = new SiteMenuView();
 
-render(siteMenuElement, new SiteMenuView(), RenderPosition.BEFOREEND);
+render(siteMenuElement, siteMenuComponent, RenderPosition.BEFOREEND);
 
 const tripPresenter = new TripPresenter(tripEventsElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteFilterElement, filterModel, pointsModel);
+
+const handleSiteMenuClick = (menuItem) => {
+  switch (menuItem) {
+    case MenuItem.ADD_NEW_POINT:
+      // Скрыть статистику
+      // Показать доску
+      // Показать форму добавления новой задачи
+      // Убрать выделение с ADD NEW TASK после сохранения
+      break;
+    case MenuItem.TABLE:
+      // Показать доску
+      // Скрыть статистику
+      break;
+    case MenuItem.STATS:
+      // Скрыть доску
+      // Показать статистику
+      break;
+  }
+};
+
+siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 filterPresenter.init();
 tripPresenter.init();

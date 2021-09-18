@@ -112,3 +112,9 @@ export const FilterType = {
   FUTURE: 'future',
   PAST: 'past',
 };
+
+export const MenuItem = {
+  ADD_NEW_POINT: 'add_new_point',
+  TABLE: 'table',
+  STATS: 'stats',
+};
