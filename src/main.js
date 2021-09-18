@@ -1,5 +1,5 @@
 import SiteMenuView from './view/site-menu.js';
-import StatsView from './view/stats.js';
+import StatisticsView from './view/statistics.js';
 import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
 import PointsModel from './model/points.js';
@@ -23,7 +23,7 @@ const siteFilterElement = document.querySelector('.trip-controls__filters');
 const tripEventsElement = document.querySelector('.trip-events');
 const addNewPointElement = document.querySelector('.trip-main__event-add-btn');
 const siteMenuComponent = new SiteMenuView();
-const statsComponent = new StatsView();
+const statsComponent = new StatisticsView();
 
 render(siteMenuElement, siteMenuComponent, RenderPosition.BEFOREEND);
 
