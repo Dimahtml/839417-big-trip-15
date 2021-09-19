@@ -318,7 +318,7 @@ export default class PointEdit extends SmartView {
     const input = this.getElement().querySelector('.event__input--destination');
 
     if (!DESTINATIONS.includes(evt.target.value)) {
-      input.setCustomValidity('НЕТ ТАКОЙ БУКВЫ! ПЕРЕХОД ХОДА! КРУТИТЕ БАРАБАН!');
+      input.setCustomValidity('This value is not valid');
       input.reportValidity();
       return;
     }
