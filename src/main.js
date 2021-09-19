@@ -5,7 +5,7 @@ import FilterPresenter from './presenter/filter.js';
 import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
 import {remove, render, RenderPosition} from './utils/render.js';
-import {MenuItem} from './const.js';
+import {MenuItem, UpdateType} from './const.js';
 import Api from './api.js';
 
 const AUTHORIZATION = 'Basic qwerjfaskdlfftiye';
@@ -59,11 +59,10 @@ render(siteMenuElement, siteMenuComponent, RenderPosition.BEFOREEND);
 filterPresenter.init();
 tripPresenter.init();
 
-let dataPoints = null;
-
-api.getPoints().then((points) => {
-  pointsModel.setPoints(points);
-  dataPoints = points.slice();
-});
-
-export {dataPoints};
+api.getPoints()
+  .then((points) => {
+    pointsModel.setPoints(UpdateType.INIT, points);
+  })
+  .catch(() => {
+    pointsModel.setPoints(UpdateType.INIT, []);
+  });
