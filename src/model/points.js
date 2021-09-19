@@ -61,8 +61,8 @@ export default class Points extends AbstractObserver {
       {
         basePrice: point['base_price'],
         isFavorite: point['is_favorite'],
-        dateFrom: point['date_from'],
-        dateTo: point['date_to'],
+        dateFrom: point.date_from !== null ? new Date(point.date_from) : point.date_from, // На клиенте дата хранится как экземпляр Date
+        dateTo: point.date_to !== null ? new Date(point.date_to) : point.date_to,
       },
     );
 
@@ -82,8 +82,8 @@ export default class Points extends AbstractObserver {
       {
         'base_price': point.basePrice,
         'is_favorite': point.isFavorite,
-        'date_from': point.dateFrom,
-        'date_to': point.dateTo,
+        'date_from': point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null, // На сервере дата хранится в ISO формате
+        'date_to': point.dateTo instanceof Date ? point.dateTo.toISOString() : null,
       },
     );
 
