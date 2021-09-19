@@ -44,3 +44,7 @@ export const generatePoint = () => {
     type,
   };
 };
+
+const POINT_COUNT = 15;
+
+export const points = new Array(POINT_COUNT).fill().map(generatePoint);
