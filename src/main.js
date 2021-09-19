@@ -42,7 +42,7 @@ const handleSiteMenuClick = (menuItem) => {
       siteMenuComponent.getElement().querySelector('#site-menu-stats').classList.add('trip-tabs__btn--active');
       siteMenuComponent.getElement().querySelector('#site-menu-table').classList.remove('trip-tabs__btn--active');
       tripPresenter.destroy();
-      statisticsComponent = new StatisticsView(mockPoints);
+      statisticsComponent = new StatisticsView(PointsModel.getPoints());
       render(pageMainContainerElement, statisticsComponent, RenderPosition.BEFOREEND);
       break;
   }

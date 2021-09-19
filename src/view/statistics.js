@@ -2,21 +2,24 @@ import SmartView from './smart.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {getTimeFormat, countMoneyByType, countTimeByType, countPointsTypes, getSortType} from '../utils/statistics.js';
-import {dataPoints as points} from '../main.js';
+// import {points} from '../mock/point.js';
 
 // Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
 const BAR_HEIGHT = 55;
 
-const typesPrice = getSortType(countMoneyByType(points));
-const typesTime = getSortType(countTimeByType(points));
-const sortType = getSortType(countPointsTypes(points));
+// const typesPrice = getSortType(countMoneyByType(points));
+// const typesTime = getSortType(countTimeByType(points));
+// const sortType = getSortType(countPointsTypes(points));
 
-const sumPriceFromType = Object.values(countMoneyByType(points)).sort((a, b) => b - a);
-const sumTimeFromType = Object.values(countTimeByType(points)).sort((a, b) => b - a);
-const quantityType = Object.values(countPointsTypes(points)).sort((a, b) => b - a);
+// const sumPriceFromType = Object.values(countMoneyByType(points)).sort((a, b) => b - a);
+// const sumTimeFromType = Object.values(countTimeByType(points)).sort((a, b) => b - a);
+// const quantityType = Object.values(countPointsTypes(points)).sort((a, b) => b - a);
 
-const generateMoneyChart = (moneyCtx) =>
-  (new Chart(moneyCtx, {
+const renderMoneyChart = (moneyCtx, points) => {
+  const typesPrice = getSortType(countMoneyByType(points));
+  const sumPriceFromType = Object.values(countMoneyByType(points)).sort((a, b) => b - a);
+
+  return new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
@@ -79,7 +82,8 @@ const generateMoneyChart = (moneyCtx) =>
         enabled: false,
       },
     },
-  }));
+  });
+};
 
 const generateTimeSpendChart = (timeCtx) =>
   (new Chart(timeCtx, {
@@ -263,8 +267,8 @@ export default class Statistics extends SmartView {
     typeCtx.height = BAR_HEIGHT * 5;
     timeCtx.height = BAR_HEIGHT * 5;
 
-    this._moneyChart = generateMoneyChart(moneyCtx, this._data);
-    this._timeChart = generateTimeSpendChart(typeCtx, this._data);
-    this._typeChart = generateTypeChart(timeCtx, this._data);
+    this._moneyChart = renderMoneyChart(moneyCtx, this._data);
+    // this._timeChart = generateTimeSpendChart(typeCtx, this._data);
+    // this._typeChart = generateTypeChart(timeCtx, this._data);
   }
 }
