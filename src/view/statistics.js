@@ -236,9 +236,9 @@ const createStatisticsTemplate = () => (
 );
 
 export default class Statistics extends SmartView {
-  constructor(data) {
+  constructor(points) {
     super();
-    this._data = data;
+    this._data = points;
     this._moneyChart = null;
     this._typeChart = null;
     this._timeChart = null;
@@ -259,6 +259,10 @@ export default class Statistics extends SmartView {
   }
 
   _setCharts() {
+    const points = this._data;
+        console.log(this._data);
+        console.log(points);
+
     const moneyCtx = this.getElement().querySelector('#money');
     const typeCtx = this.getElement().querySelector('#type');
     const timeCtx = this.getElement().querySelector('#time-spend');
@@ -267,7 +271,7 @@ export default class Statistics extends SmartView {
     typeCtx.height = BAR_HEIGHT * 5;
     timeCtx.height = BAR_HEIGHT * 5;
 
-    this._moneyChart = renderMoneyChart(moneyCtx, this._data);
+    this._moneyChart = renderMoneyChart(moneyCtx, points);
     // this._timeChart = generateTimeSpendChart(typeCtx, this._data);
     // this._typeChart = generateTypeChart(timeCtx, this._data);
   }
