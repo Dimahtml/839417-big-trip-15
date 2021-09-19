@@ -2,7 +2,7 @@ import SmartView from './smart.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {getTimeFormat, countMoneyByType, countTimeByType, countPointsTypes, getSortType} from '../utils/statistics.js';
-import {points} from '../mock/point.js';
+import {dataPoints as points} from '../main.js';
 
 // Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
 const BAR_HEIGHT = 55;
