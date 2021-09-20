@@ -24,7 +24,7 @@ const siteMenuComponent = new SiteMenuView();
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
-const tripPresenter = new TripPresenter(tripEventsElement, pointsModel, filterModel);
+const tripPresenter = new TripPresenter(tripEventsElement, pointsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(siteFilterElement, filterModel, pointsModel);
 
 let statisticsComponent = null;
