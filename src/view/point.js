@@ -32,8 +32,6 @@ const createPointTemplate = (point) => {
   let diff = dayjs(dateTo).diff(dateFrom, 'minute');
   diff = dayjs.duration(diff, 'minutes').format('H[h] mm[m]');
 
-  // const diff = dayjs(dayjs(dateTo).diff(dateFrom, 'hour')).format('H[h] mm[m]');
-
   return `<li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="${dayjs(dateFrom).format('YYYY-MM-DD')}">${month}</time>

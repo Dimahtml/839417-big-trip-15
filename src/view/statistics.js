@@ -258,8 +258,6 @@ export default class Statistics extends SmartView {
   }
 
   _setCharts() {
-    const points = this._data;
-
     const moneyCtx = this.getElement().querySelector('#money');
     const typeCtx = this.getElement().querySelector('#type');
     const timeCtx = this.getElement().querySelector('#time-spend');
@@ -268,7 +266,7 @@ export default class Statistics extends SmartView {
     typeCtx.height = BAR_HEIGHT * 5;
     timeCtx.height = BAR_HEIGHT * 5;
 
-    this._moneyChart = renderMoneyChart(moneyCtx, points);
+    this._moneyChart = renderMoneyChart(moneyCtx, this._data);
     this._timeChart = renderTimeSpendChart(typeCtx, this._data);
     this._typeChart = renderTypeChart(timeCtx, this._data);
   }
