@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import durationPlugin from 'dayjs/plugin/duration';
+dayjs.extend(durationPlugin);
 
 export const sortPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
 
@@ -58,4 +60,4 @@ export const getOffersByType = (type) => {
 
 export const isDatesEqual = (dateA, dateB) => ((dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D'));
 
-export const calculateDuration = (point) => point.dateFrom - point.dateTo;
+// export const calculateDuration = (point) => dayjs.duration(point.dateFrom - point.dateTo).format('H mm');
