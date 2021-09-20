@@ -85,8 +85,11 @@ const renderMoneyChart = (moneyCtx, points) => {
   });
 };
 
-const generateTimeSpendChart = (timeCtx) =>
-  (new Chart(timeCtx, {
+const renderTimeSpendChart = (timeCtx, points) => {
+  const typesTime = getSortType(countTimeByType(points));
+  const sumTimeFromType = Object.values(countTimeByType(points)).sort((a, b) => b - a);
+
+  return new Chart(timeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
@@ -149,9 +152,13 @@ const generateTimeSpendChart = (timeCtx) =>
         enabled: false,
       },
     },
-  }));
+  });
+};
 
-const generateTypeChart = (typeCtx) => (
+const renderTypeChart = (typeCtx, points) => {
+  const sortType = getSortType(countPointsTypes(points));
+  const quantityType = Object.values(countPointsTypes(points)).sort((a, b) => b - a);
+
   new Chart(typeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
@@ -215,7 +222,8 @@ const generateTypeChart = (typeCtx) => (
         enabled: false,
       },
     },
-  }));
+  });
+};
 
 const createStatisticsTemplate = () => (
   `<section class="statistics">
@@ -260,8 +268,6 @@ export default class Statistics extends SmartView {
 
   _setCharts() {
     const points = this._data;
-        console.log(this._data);
-        console.log(points);
 
     const moneyCtx = this.getElement().querySelector('#money');
     const typeCtx = this.getElement().querySelector('#type');
@@ -272,7 +278,7 @@ export default class Statistics extends SmartView {
     timeCtx.height = BAR_HEIGHT * 5;
 
     this._moneyChart = renderMoneyChart(moneyCtx, points);
-    // this._timeChart = generateTimeSpendChart(typeCtx, this._data);
-    // this._typeChart = generateTypeChart(timeCtx, this._data);
+    this._timeChart = renderTimeSpendChart(typeCtx, this._data);
+    this._typeChart = renderTypeChart(timeCtx, this._data);
   }
 }
