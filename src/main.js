@@ -4,14 +4,14 @@ import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
 import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
-// import {generatePoint} from './mock/point.js';
 import {remove, render, RenderPosition} from './utils/render.js';
-import {MenuItem} from './const.js';
-import {points} from '../src/mock/point.js';
+import {MenuItem, UpdateType} from './const.js';
+import Api from './api.js';
+
+const AUTHORIZATION = 'Basic qwerjfaskdlfftiye';
+const END_POINT = 'https://15.ecmascript.pages.academy/big-trip';
 
 const pointsModel = new PointsModel();
-pointsModel.setPoints(points);
-
 const filterModel = new FilterModel();
 
 const pageMainContainerElement = document.querySelector('.page-body__page-main').querySelector('.page-body__container');
@@ -21,12 +21,12 @@ const siteFilterElement = document.querySelector('.trip-controls__filters');
 const tripEventsElement = document.querySelector('.trip-events');
 const addNewPointElement = document.querySelector('.trip-main__event-add-btn');
 const siteMenuComponent = new SiteMenuView();
-// const statisticsComponent = new StatisticsView(points);
 
-render(siteMenuElement, siteMenuComponent, RenderPosition.BEFOREEND);
+const api = new Api(END_POINT, AUTHORIZATION);
 
-const tripPresenter = new TripPresenter(tripEventsElement, pointsModel, filterModel);
+const tripPresenter = new TripPresenter(tripEventsElement, pointsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(siteFilterElement, filterModel, pointsModel);
+
 let statisticsComponent = null;
 
 const handleSiteMenuClick = (menuItem) => {
@@ -42,13 +42,11 @@ const handleSiteMenuClick = (menuItem) => {
       siteMenuComponent.getElement().querySelector('#site-menu-stats').classList.add('trip-tabs__btn--active');
       siteMenuComponent.getElement().querySelector('#site-menu-table').classList.remove('trip-tabs__btn--active');
       tripPresenter.destroy();
-      statisticsComponent = new StatisticsView(points);
+      statisticsComponent = new StatisticsView(pointsModel.getPoints());
       render(pageMainContainerElement, statisticsComponent, RenderPosition.BEFOREEND);
       break;
   }
 };
-
-siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 addNewPointElement.addEventListener('click', (evt) => {
   evt.preventDefault();
@@ -57,3 +55,15 @@ addNewPointElement.addEventListener('click', (evt) => {
 
 filterPresenter.init();
 tripPresenter.init();
+
+api.getPoints()
+  .then((points) => {
+    pointsModel.setPoints(UpdateType.INIT, points);
+    render(siteMenuElement, siteMenuComponent, RenderPosition.BEFOREEND);
+    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+  })
+  .catch(() => {
+    pointsModel.setPoints(UpdateType.INIT, []);
+    render(siteMenuElement, siteMenuComponent, RenderPosition.BEFOREEND);
+    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+  });

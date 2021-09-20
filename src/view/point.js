@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract.js';
 import {generateOffers} from '../mock/offer.js';
+import durationPlugin from 'dayjs/plugin/duration';
+dayjs.extend(durationPlugin);
 
 const createPointOffer = (point = {}) => {
   const potentialOffers = generateOffers(point.type);
@@ -27,7 +29,8 @@ const createPointTemplate = (point) => {
   const month = dayjs(dateFrom).format('MMM DD');
   const startTime = dayjs(dateFrom).format('HH:mm');
   const endTime = dayjs(dateTo).format('HH:mm');
-  const diff = dayjs(dateTo).diff(dateFrom, 'minute');
+  let diff = dayjs(dateTo).diff(dateFrom, 'minute');
+  diff = dayjs.duration(diff, 'minutes').format('H[h] mm[m]');
 
   return `<li class="trip-events__item">
     <div class="event">
@@ -42,7 +45,7 @@ const createPointTemplate = (point) => {
           &mdash;
           <time class="event__end-time" datetime="${dayjs(dateTo).format('YYYY-MM-DDTHH:mm')}">${endTime}</time>
         </p>
-        <p class="event__duration">${diff}M</p>
+        <p class="event__duration">${diff}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
