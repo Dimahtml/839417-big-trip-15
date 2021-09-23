@@ -7,8 +7,6 @@ import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-const DESTINATIONS = ['Amsterdam', 'Paris', 'London', 'Praga', 'Lisbon', 'Marselle', 'Rome', 'Munchen', 'Geneva', 'Stambul'];
-
 const BLANK_POINT = {
   basePrice: 0,
   dateFrom: Date.now(),
@@ -96,6 +94,7 @@ const createEventTypeItem = (pointTypes) => {
 };
 // Три функции для отрисовки блока DESTINATION
 const createPicturesItemTemplate = (point) => {
+      console.log(point);
   const pictures = point.destination.pictures;
   return pictures.map((picture) =>
     `<img class="event__photo" src="${picture.src}"
@@ -119,9 +118,9 @@ const createEventSectionDestination = (point, isPictures) => (
   </section>`
 );
 // Функция для отрисовки вариантов городов
-const createDestinationOptions = (destinations) =>
-  destinations.map((destination) =>`<option value="${destination.name}"></option>`).join('');
-
+const createDestinationOptions = (destinations) => (
+  destinations.map((destination) =>`<option value="${destination.name}"></option>`).join('')
+);
 // функция для отрисовки всей формы EVENT EDIT
 const createPointEditTemplate = (data, allOffers, allDestinations) => {
   const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures} = data;
@@ -329,7 +328,7 @@ export default class PointEdit extends SmartView {
     } else {
       evt.target.setCustomValidity('');
       this.updateData(
-        {
+        {isPictures: this._allDestinations.find((destination) => destination.name === inputValue).pictures.length > 0,
           destination: {
             description: this._allDestinations.find((destination) => destination.name === inputValue).description,
             name: inputValue,
@@ -389,7 +388,6 @@ export default class PointEdit extends SmartView {
     this._callback.deleteClick = callback;
     this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
-
 
   static parsePointToData(point) {
     const potentialOffers = getOffersByType(point.type);
