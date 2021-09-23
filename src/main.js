@@ -28,7 +28,7 @@ const siteMenuComponent = new SiteMenuView();
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
-const tripPresenter = new TripPresenter(tripEventsElement, pointsModel, filterModel, api);
+const tripPresenter = new TripPresenter(tripEventsElement, pointsModel, filterModel, offersModel, destinationsModel, api);
 const filterPresenter = new FilterPresenter(siteFilterElement, filterModel, pointsModel);
 
 let statisticsComponent = null;
@@ -70,7 +70,6 @@ Promise.all([
     destinationsModel.setDestinations(UpdateType.INIT, destinations);
     offersModel.setOffers(UpdateType.INIT, offers);
     pointsModel.setPoints(UpdateType.INIT, points);
-      console.log(data);
     render(siteMenuElement, siteMenuComponent, RenderPosition.BEFOREEND);
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   })

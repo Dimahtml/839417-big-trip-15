@@ -13,9 +13,11 @@ import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
 
 
 export default class Trip {
-  constructor(tripContainer, pointsModel, filterModel, api) {
+  constructor(tripContainer, pointsModel, filterModel, offersModel, destinationsModel, api) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
+    this._offersModel = offersModel;
+    this._destinationsModel = destinationsModel;
     this._tripContainer = tripContainer;
     this._pointPresenter = new Map();
     this._filterType = FilterType.EVERYTHING;
@@ -62,9 +64,12 @@ export default class Trip {
   }
 
   createPoint(callback) {
+    this._offers = this._offersModel.getOffers();
+    this._destinations = this._destinationsModel.getDestinations();
     this._currentSortType = SortType.DEFAULT;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._pointNewPresenter.init(callback);
+
+    this._pointNewPresenter.init(this._offers, this._destinations, callback);
   }
 
   _getPoints() {
@@ -180,7 +185,7 @@ export default class Trip {
       return;
     }
     render(this._tripContainer, this._pointsListComponent, RenderPosition.BEFOREEND);
-    this._getPoints().forEach((point) =>  this._renderPoint(point));
+    points.forEach((point) =>  this._renderPoint(point));
   }
 
   _clearPointList() {
