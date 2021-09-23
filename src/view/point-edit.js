@@ -120,10 +120,13 @@ const createEventSectionDestination = (point, isPictures) => (
 );
 // Функция для отрисовки вариантов городов
 const createDestinationOptions = (destinations) =>
-  destinations.map((destination) =>`<option value="${destination}"></option>`).join('');
+  destinations.map((destination) =>`<option value="${destination.name}"></option>`).join('');
+
 // функция для отрисовки всей формы EVENT EDIT
-const createPointEditTemplate = (data) => {
+const createPointEditTemplate = (data, allOffers, allDestinations) => {
   const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures} = data;
+  const destinationList = createDestinationOptions(allDestinations);
+
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -147,7 +150,7 @@ const createPointEditTemplate = (data) => {
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
         <datalist id="destination-list-1" required>
-          ${createDestinationOptions(DESTINATIONS)}
+          ${destinationList}
         </datalist>
       </div>
 
@@ -181,10 +184,10 @@ const createPointEditTemplate = (data) => {
 };
 
 export default class PointEdit extends SmartView {
-  constructor(data) {
+  constructor(point = BLANK_POINT, allOffers, allDestinations) {
     super();
-    const {point = BLANK_POINT, offers, destinations} = data;
-      console.log(data);
+    this._allOffers = allOffers;
+    this._allDestinations = allDestinations;
     this._data = PointEdit.parsePointToData(point);
     this._datepicker = null;
 
@@ -220,7 +223,7 @@ export default class PointEdit extends SmartView {
   }
 
   getTemplate() {
-    return createPointEditTemplate(this._data);
+    return createPointEditTemplate(this._data, this._allOffers, this._allDestinations);
   }
 
   restoreHandlers() {

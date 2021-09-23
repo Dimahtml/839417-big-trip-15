@@ -29,12 +29,11 @@ export default class Point {
 
   init(point, offers, destinations) {
     this._point = point;
-
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._pointEditComponent;
 
     this._pointComponent = new PointView(point);
-    this._pointEditComponent = new PointEditView({point, offers, destinations});
+    this._pointEditComponent = new PointEditView(point, offers, destinations);
 
     this._pointComponent.setOpenButtonClickHandler(this._handleOpenButtonClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
