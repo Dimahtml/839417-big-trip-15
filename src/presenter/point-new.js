@@ -2,10 +2,26 @@ import PointEditView from '../view/point-edit.js';
 import {remove, render, RenderPosition} from '../utils/render.js';
 import {UserAction, UpdateType} from '../const.js';
 
+const BLANK_POINT = {
+  basePrice: 0,
+  dateFrom: Date.now(),
+  dateTo: Date.now(),
+  destination:
+    {
+      description: '',
+      name: '',
+      pictures: [],
+    },
+  isFavorite: false,
+  offers: [],
+  type: 'taxi',
+};
+
 export default class PointNew {
   constructor(pointListContainer, changeData) {
     this._pointListContainer = pointListContainer;
     this._changeData = changeData;
+    this._point = BLANK_POINT;
 
     this._pointEditComponent = null;
     this._destroyCallback = null;
@@ -21,7 +37,7 @@ export default class PointNew {
       return;
     }
 
-    this._pointEditComponent = new PointEditView({offers, destinations});
+    this._pointEditComponent = new PointEditView(this._point, offers, destinations);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._pointEditComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
