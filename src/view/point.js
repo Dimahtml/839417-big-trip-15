@@ -1,13 +1,12 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract.js';
-import {generateOffers} from '../mock/offer.js';
 import durationPlugin from 'dayjs/plugin/duration';
 dayjs.extend(durationPlugin);
 
 const createPointOffer = (point = {}) => {
-  const potentialOffers = generateOffers(point.type);
+  const checkedOffers = point.offers;
 
-  return potentialOffers.offers.map((offer) =>
+  return checkedOffers.map((offer) =>
     `<li class="event__offer">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
@@ -63,9 +62,10 @@ const createPointTemplate = (point) => {
 };
 
 export default class Point extends AbstractView {
-  constructor(point) {
+  constructor(point, offers) {
     super();
     this._point = point;
+    this._potentialOffers = offers;
 
     this._openButtonClickHandler = this._openButtonClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);

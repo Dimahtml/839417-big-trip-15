@@ -32,7 +32,7 @@ export default class Point {
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._pointEditComponent;
 
-    this._pointComponent = new PointView(point);
+    this._pointComponent = new PointView(point, offers, destinations);
     this._pointEditComponent = new PointEditView(point, offers, destinations);
 
     this._pointComponent.setOpenButtonClickHandler(this._handleOpenButtonClick);
