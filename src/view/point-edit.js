@@ -320,22 +320,25 @@ export default class PointEdit extends SmartView {
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
-    const input = this.getElement().querySelector('.event__input--destination');
+    const inputValue = evt.target.value;
+    const cityList = this._allDestinations.map((destination) => destination.name);
+    const isCityExist = cityList.includes(inputValue);
 
-    if (!DESTINATIONS.includes(evt.target.value)) {
-      input.setCustomValidity('This value is not valid');
-      input.reportValidity();
-      return;
+    if (inputValue.length <= 0 || isCityExist === false) {
+      evt.target.setCustomValidity('please select a city from the list');
+    } else {
+      evt.target.setCustomValidity('');
+      this.updateData(
+        {
+          destination: {
+            description: this._allDestinations.find((destination) => destination.name === inputValue).description,
+            name: inputValue,
+            pictures: this._allDestinations.find((destination) => destination.name === inputValue).pictures,
+          },
+        },
+      );
     }
-    input.setCustomValidity('');
-    input.reportValidity();
-    this.updateData({
-      destination: {
-        description: this._data.destination.description,
-        name: evt.target.value, pictures:
-        this._data.destination.pictures,
-      },
-    }, true);
+    evt.target.reportValidity();
   }
 
   _dateFromChangeHandler([dateFrom]) {
