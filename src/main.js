@@ -4,6 +4,8 @@ import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
 import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
+import OffersModel from './model/offers.js';
+import DestinationModel from './model/destination.js';
 import {remove, render, RenderPosition} from './utils/render.js';
 import {MenuItem, UpdateType} from './const.js';
 import Api from './api.js';
@@ -13,6 +15,8 @@ const END_POINT = 'https://15.ecmascript.pages.academy/big-trip';
 
 const pointsModel = new PointsModel();
 const filterModel = new FilterModel();
+const offersModel = new OffersModel();
+const destinationsModel = new DestinationModel();
 
 const pageMainContainerElement = document.querySelector('.page-body__page-main').querySelector('.page-body__container');
 
@@ -56,9 +60,17 @@ addNewPointElement.addEventListener('click', (evt) => {
 filterPresenter.init();
 tripPresenter.init();
 
-api.getPoints()
-  .then((points) => {
+Promise.all([
+  api.getDestinations(),
+  api.getOffers(),
+  api.getPoints(),
+])
+  .then((data) => {
+    const [destinations, offers, points] = data;
+    destinationsModel.setDestinations(UpdateType.INIT, destinations);
+    offersModel.setOffers(UpdateType.INIT, offers);
     pointsModel.setPoints(UpdateType.INIT, points);
+      console.log(data);
     render(siteMenuElement, siteMenuComponent, RenderPosition.BEFOREEND);
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   })
