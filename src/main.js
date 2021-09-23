@@ -67,7 +67,7 @@ Promise.all([
 ])
   .then((data) => {
     const [destinations, offers, points] = data;
-    console.log(points);
+      console.log(data);
     destinationsModel.setDestinations(UpdateType.INIT, destinations);
     offersModel.setOffers(UpdateType.INIT, offers);
     pointsModel.setPoints(UpdateType.INIT, points);

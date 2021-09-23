@@ -1,7 +1,5 @@
 import dayjs from 'dayjs';
-import {getOffersByType} from '../utils/point.js';
 import {Types} from '../const.js';
-import {generateOffers} from '../mock/offer.js';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 
@@ -21,51 +19,17 @@ const BLANK_POINT = {
   offers: [],
   type: 'taxi',
 };
-
-// Три функции для отрисовки блока OFFERS
-const createOfferName = (offer = {}) => {
-  let offerName = '';
-  switch (offer.title) {
-    case 'Add luggage':
-      offerName = 'luggage';
-      break;
-    case 'Switch to comfort':
-      offerName = 'comfort';
-      break;
-    case 'Add meal':
-      offerName = 'meal';
-      break;
-    case 'Choose seats':
-      offerName = 'seats';
-      break;
-    case 'Travel by train':
-      offerName = 'train';
-      break;
-    case 'Choose the radio station':
-      offerName = 'radiostation';
-      break;
-    case 'Upgrade to a business class':
-      offerName = 'businessclass';
-      break;
-    default:
-      offerName = 'default';
-  }
-
-  return offerName;
-};
-
-const createEventOfferSelector = (point = {}) => {
-  const potentialOffers = generateOffers(point.type);
+// Две функции для отрисовки блока OFFERS
+const createEventOfferSelector = (point, allOffersForType) => {
   const currentOffersTitles = point.offers.map((item) => item.title);
-
-  return potentialOffers.offers.map((offer) => {
+  return allOffersForType.map((offer) => {
     let isChecked = false;
     if (currentOffersTitles.includes(offer.title)) {
       isChecked = true;
     }
     return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${createOfferName(offer)}-1" type="checkbox" name="event-offer-${createOfferName(offer)}" ${isChecked ? 'checked' : ''}>
-      <label class="event__offer-label" for="event-offer-${createOfferName(offer)}-1">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title}-1" type="checkbox" name="event-offer-${offer.title}" ${isChecked ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-${offer.title}-1">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
@@ -74,11 +38,11 @@ const createEventOfferSelector = (point = {}) => {
   }).join('');
 };
 
-const createEventSectionOffers = (data) => (
+const createEventSectionOffers = (point, allOffersForType) => (
   `<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
     <div class="event__available-offers">
-      ${createEventOfferSelector(data)}
+      ${createEventOfferSelector(point, allOffersForType)}
     </div>
   </section>`
 );
@@ -94,7 +58,6 @@ const createEventTypeItem = (pointTypes) => {
 };
 // Три функции для отрисовки блока DESTINATION
 const createPicturesItemTemplate = (point) => {
-      console.log(point);
   const pictures = point.destination.pictures;
   return pictures.map((picture) =>
     `<img class="event__photo" src="${picture.src}"
@@ -122,9 +85,10 @@ const createDestinationOptions = (destinations) => (
   destinations.map((destination) =>`<option value="${destination.name}"></option>`).join('')
 );
 // функция для отрисовки всей формы EVENT EDIT
-const createPointEditTemplate = (data, allOffers, allDestinations) => {
-  const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures} = data;
+const createPointEditTemplate = (point, allOffers, allDestinations) => {
+  const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures} = point;
   const destinationList = createDestinationOptions(allDestinations);
+  const allOffersForType = allOffers.find((item) => item.type === type).offers;
 
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -176,8 +140,8 @@ const createPointEditTemplate = (data, allOffers, allDestinations) => {
       </button>
     </header>
     <section class="event__details">
-      ${isOffers ? createEventSectionOffers(data) : ''}
-      ${isDestination ? createEventSectionDestination(data, isPictures) : ''}
+      ${isOffers ? createEventSectionOffers(point, allOffersForType) : ''}
+      ${isDestination ? createEventSectionDestination(point, isPictures) : ''}
     </section>
   </form>`;
 };
@@ -185,9 +149,10 @@ const createPointEditTemplate = (data, allOffers, allDestinations) => {
 export default class PointEdit extends SmartView {
   constructor(point = BLANK_POINT, allOffers, allDestinations) {
     super();
+    this._point = point;
     this._allOffers = allOffers;
     this._allDestinations = allDestinations;
-    this._data = PointEdit.parsePointToData(point);
+    this._data = PointEdit.parsePointToData(point, allOffers);
     this._datepicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -215,9 +180,9 @@ export default class PointEdit extends SmartView {
     }
   }
 
-  reset(point) {
+  reset(point, allOffers = this._allOffers) {
     this.updateData(
-      PointEdit.parsePointToData(point),
+      PointEdit.parsePointToData(point, allOffers),
     );
   }
 
@@ -313,7 +278,9 @@ export default class PointEdit extends SmartView {
   _typeToggleHandler(evt) {
     evt.preventDefault();
     this.updateData({
+      isOffers: true,
       type: evt.target.value,
+      offers: this._allOffers.find((item) => item.type === evt.target.value).offers,
     });
   }
 
@@ -389,8 +356,8 @@ export default class PointEdit extends SmartView {
     this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
-  static parsePointToData(point) {
-    const potentialOffers = getOffersByType(point.type);
+  static parsePointToData(point, allOffers) {
+    const potentialOffers = allOffers.find((item) => item.type === point.type).offers;
     return Object.assign(
       {},
       point,
