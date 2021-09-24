@@ -35,20 +35,22 @@ let statisticsComponent = null;
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
-    case MenuItem.TABLE:
+    case MenuItem.TABLE: {
       siteMenuComponent.getElement().querySelector('#site-menu-table').classList.add('trip-tabs__btn--active');
       siteMenuComponent.getElement().querySelector('#site-menu-stats').classList.remove('trip-tabs__btn--active');
       tripPresenter.destroy();
       tripPresenter.init();
       remove(statisticsComponent);
       break;
-    case MenuItem.STATS:
+    }
+    case MenuItem.STATS: {
       siteMenuComponent.getElement().querySelector('#site-menu-stats').classList.add('trip-tabs__btn--active');
       siteMenuComponent.getElement().querySelector('#site-menu-table').classList.remove('trip-tabs__btn--active');
       tripPresenter.destroy();
       statisticsComponent = new StatisticsView(pointsModel.getPoints());
       render(pageMainContainerElement, statisticsComponent, RenderPosition.BEFOREEND);
       break;
+    }
   }
 };
 

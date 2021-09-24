@@ -90,22 +90,25 @@ export default class Point {
     };
 
     switch (state) {
-      case State.SAVING:
+      case State.SAVING: {
         this._pointEditComponent.updateData({
           isDisabled: true,
           isSaving: true,
         });
         break;
-      case State.DELETING:
+      }
+      case State.DELETING: {
         this._pointEditComponent.updateData({
           isDisabled: true,
           isDeleting: true,
         });
         break;
-      case State.ABORTING:
+      }
+      case State.ABORTING: {
         this._pointComponent.shake(resetFormState);
         this._pointEditComponent.shake(resetFormState);
         break;
+      }
     }
   }
 

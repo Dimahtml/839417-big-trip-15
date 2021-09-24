@@ -77,12 +77,15 @@ export default class Trip {
     const filtredPoints = filter[this._filterType](points);
 
     switch (this._currentSortType) {
-      case SortType.TIME:
+      case SortType.TIME: {
         return filtredPoints.sort(sortTime);
-      case SortType.PRICE:
+      }
+      case SortType.PRICE: {
         return filtredPoints.sort(sortPrice);
-      case SortType.DEFAULT:
+      }
+      case SortType.DEFAULT: {
         return filtredPoints.sort(sortDateFrom);
+      }
     }
 
     return filtredPoints;
@@ -95,7 +98,7 @@ export default class Trip {
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
-      case UserAction.UPDATE_POINT:
+      case UserAction.UPDATE_POINT: {
         this._pointPresenter.get(update.id).setViewState(PointPresenterViewState.SAVING);
         this._api.updatePoint(update)
           .then((response) => {
@@ -105,7 +108,8 @@ export default class Trip {
             this._pointPresenter.get(update.id).setViewState(PointPresenterViewState.ABORTING);
           });
         break;
-      case UserAction.ADD_POINT:
+      }
+      case UserAction.ADD_POINT: {
         this._pointNewPresenter.setSaving();
         this._api.addPoint(update)
           .then((response) => {
@@ -115,7 +119,8 @@ export default class Trip {
             this._pointNewPresenter.setAborting();
           });
         break;
-      case UserAction.DELETE_POINT:
+      }
+      case UserAction.DELETE_POINT: {
         this._pointPresenter.get(update.id).setViewState(PointPresenterViewState.DELETING);
         this._api.deletePoint(update)
           .then(() => {
@@ -125,6 +130,7 @@ export default class Trip {
             this._pointPresenter.get(update.id).setViewState(PointPresenterViewState.ABORTING);
           });
         break;
+      }
     }
   }
 
