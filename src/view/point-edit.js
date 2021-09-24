@@ -331,10 +331,21 @@ export default class PointEdit extends SmartView {
   }
 
   _basePriceChangeHandler(evt) {
+    const priceInput = evt.target.value;
+    const isNotNumber = isNaN(priceInput);
     evt.preventDefault();
-    this.updateData({
-      basePrice: evt.target.value,
-    }, true);
+    if (priceInput <= 0 || isNotNumber) {
+      evt.target.setCustomValidity('Price must be positive number');
+    } else {
+      evt.target.setCustomValidity('');
+      this.updateData(
+        {
+          basePrice: evt.target.value,
+        },
+        true,
+      );
+    }
+    evt.target.reportValidity();
   }
 
   _formSubmitHandler(evt) {
