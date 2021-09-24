@@ -1,7 +1,7 @@
 import SiteMenuView from '../view/site-menu.js';
 import FilterView from '../view/filter.js';
 import SortView from '../view/sort.js';
-import PointsListView from '../view/points-list.js';
+import PointsListView from '../view/points-container.js';
 import NoPointView from '../view/no-point.js';
 import LoadingView from '../view/loading.js';
 import PointPresenter, {State as PointPresenterViewState} from './point.js';
@@ -10,7 +10,6 @@ import {filter} from '../utils/filter.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortTime, sortPrice} from '../utils/point.js';
 import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
-
 
 export default class Trip {
   constructor(tripContainer, pointsModel, filterModel, offersModel, destinationsModel, api) {
