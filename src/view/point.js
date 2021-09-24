@@ -3,6 +3,19 @@ import AbstractView from './abstract.js';
 import durationPlugin from 'dayjs/plugin/duration';
 dayjs.extend(durationPlugin);
 
+const getFormattedDuration = (minutes) => {
+  let diffFormatted = '';
+  if (minutes < 60) {
+    diffFormatted = dayjs.duration(minutes, 'minutes').format('mm[M]');
+  } else if (minutes < 1440 && minutes >= 60) {
+    diffFormatted = dayjs.duration(minutes, 'minutes').format('HH[H] mm[M]');
+  } else if (minutes >= 1440) {
+    diffFormatted = dayjs.duration(minutes, 'minutes').format('DD[D] HH[H] mm[M]');
+  }
+
+  return diffFormatted;
+};
+
 const createPointOffer = (point = {}) => {
   const checkedOffers = point.offers;
 
@@ -28,8 +41,8 @@ const createPointTemplate = (point) => {
   const month = dayjs(dateFrom).format('MMM DD');
   const startTime = dayjs(dateFrom).format('HH:mm');
   const endTime = dayjs(dateTo).format('HH:mm');
-  let diff = dayjs(dateTo).diff(dateFrom, 'minute');
-  diff = dayjs.duration(diff, 'minutes').format('H[h] mm[m]');
+  const diff = dayjs(dateTo).diff(dateFrom, 'minute');
+  const durationFormatted = getFormattedDuration(diff);
 
   return `<li class="trip-events__item">
     <div class="event">
@@ -44,7 +57,7 @@ const createPointTemplate = (point) => {
           &mdash;
           <time class="event__end-time" datetime="${dayjs(dateTo).format('YYYY-MM-DDTHH:mm')}">${endTime}</time>
         </p>
-        <p class="event__duration">${diff}</p>
+        <p class="event__duration">${durationFormatted}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>

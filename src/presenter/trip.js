@@ -152,7 +152,6 @@ export default class Trip {
     if (this._currentSortType === sortType) {
       return;
     }
-
     this._currentSortType = sortType;
     this._clearPointList({resetSortType: true});
     this._renderTrip();
