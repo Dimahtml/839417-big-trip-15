@@ -154,6 +154,8 @@ export default class Trip {
     }
     this._currentSortType = sortType;
     this._clearPointList({resetSortType: true});
+    remove(this._sortComponent);
+    this._renderSort(sortType);
     this._renderTrip();
   }
 
@@ -163,7 +165,6 @@ export default class Trip {
     if (this._sortComponent !== null) {
       this._sortComponent = null;
     }
-
     this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
 
