@@ -10,6 +10,8 @@ export const sortTime = (pointA, pointB) => {
   return durationB - durationA;
 };
 
+export const sortDateFrom = (pointA, pointB) => pointB.dateFrom - pointA.dateFrom;
+
 export const getOffersByType = (type) => {
   let offers = [];
   switch (type) {

@@ -321,13 +321,13 @@ export default class PointEdit extends SmartView {
   _dateFromChangeHandler([dateFrom]) {
     this.updateData({
       dateFrom: dateFrom,
-    }, true);
+    });
   }
 
   _dateToChangeHandler([dateTo]) {
     this.updateData({
       dateTo: dateTo,
-    }, true);
+    });
   }
 
   _basePriceChangeHandler(evt) {

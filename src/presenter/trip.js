@@ -8,7 +8,7 @@ import PointPresenter, {State as PointPresenterViewState} from './point.js';
 import PointNewPresenter from './point-new.js';
 import {filter} from '../utils/filter.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
-import {sortTime, sortPrice} from '../utils/point.js';
+import {sortTime, sortPrice, sortDateFrom} from '../utils/point.js';
 import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
 
 export default class Trip {
@@ -81,6 +81,8 @@ export default class Trip {
         return filtredPoints.sort(sortTime);
       case SortType.PRICE:
         return filtredPoints.sort(sortPrice);
+      case SortType.DEFAULT:
+        return filtredPoints.sort(sortDateFrom);
     }
 
     return filtredPoints;
