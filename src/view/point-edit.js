@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import {Types} from '../const.js';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
 
@@ -48,14 +47,14 @@ const createEventSectionOffers = (point, allOffersForType, isDisabled) => (
   </section>`
 );
 // Функция отрисовки одного элемента ТИП ПОЕЗДКИ
-const createEventTypeItem = (pointTypes, isDisabled) => {
-  const types = Object.values(pointTypes);
+const createEventTypeItem = (allOffers, isDisabled) => {
+  const types = allOffers.map((item) => item.type);
 
   return types.map((type) =>
     `<div class="event__type-item">
-      <input id="event-type-${type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio"
-        name="event-type" value="${type.toLowerCase()}" ${isDisabled ? 'disabled' : ''}>
-        <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-1">${type[0].toUpperCase() + type.substring(1)}</label>
+      <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio"
+        name="event-type" value="${type}" ${isDisabled ? 'disabled' : ''}>
+        <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type[0].toUpperCase() + type.substring(1)}</label>
     </div>`).join('');
 };
 // Три функции для отрисовки блока DESTINATION
@@ -103,7 +102,7 @@ const createPointEditTemplate = (point, allOffers, allDestinations) => {
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
-            ${createEventTypeItem(Types, isDisabled)}
+            ${createEventTypeItem(allOffers, isDisabled)}
           </fieldset>
         </div>
       </div>
