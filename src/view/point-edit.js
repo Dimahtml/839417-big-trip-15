@@ -91,7 +91,6 @@ const createPointEditTemplate = (point, allOffers, allDestinations) => {
   const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures, isDisabled, isSaving, isDeleting} = point;
   const destinationList = createDestinationOptions(allDestinations);
   const allOffersForType = allOffers.find((item) => item.type === type).offers;
-
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
