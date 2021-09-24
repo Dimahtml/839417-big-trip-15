@@ -4,12 +4,14 @@ import durationPlugin from 'dayjs/plugin/duration';
 dayjs.extend(durationPlugin);
 
 const getFormattedDuration = (minutes) => {
+  const minutesInHour = 60;
+  const minutesInDay = 1440;
   let diffFormatted = '';
-  if (minutes < 60) {
+  if (minutes < minutesInHour) {
     diffFormatted = dayjs.duration(minutes, 'minutes').format('mm[M]');
-  } else if (minutes < 1440 && minutes >= 60) {
+  } else if (minutes < minutesInDay && minutes >= minutesInHour) {
     diffFormatted = dayjs.duration(minutes, 'minutes').format('HH[H] mm[M]');
-  } else if (minutes >= 1440) {
+  } else if (minutes >= minutesInDay) {
     diffFormatted = dayjs.duration(minutes, 'minutes').format('DD[D] HH[H] mm[M]');
   }
 
