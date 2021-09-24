@@ -18,6 +18,7 @@ const BLANK_POINT = {
   offers: [],
   type: 'taxi',
 };
+
 // Две функции для отрисовки блока OFFERS
 const createEventOfferSelector = (point, allOffersForType, isDisabled) => {
   const currentOffersTitles = point.offers.map((item) => item.title);
@@ -87,9 +88,12 @@ const createDestinationOptions = (destinations) => (
 );
 // функция для отрисовки всей формы EVENT EDIT
 const createPointEditTemplate = (point, allOffers, allDestinations) => {
-  const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures, isDisabled, isSaving, isDeleting} = point;
+  const {type, id, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures, isDisabled, isSaving, isDeleting} = point;
   const destinationList = createDestinationOptions(allDestinations);
   const allOffersForType = allOffers.find((item) => item.type === type).offers;
+  const dateFromFormatted = dayjs(dateFrom).format('DD/MM/YY HH:mm');
+  const dateToFormatted = dayjs(dateTo).format('DD/MM/YY HH:mm');
+
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -119,21 +123,21 @@ const createPointEditTemplate = (point, allOffers, allDestinations) => {
       </div>
 
       <div class="event__field-group  event__field-group--time">
-        <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text"
-          name="event-start-time" value="${dayjs(dateFrom).format('DD/MM/YY HH:mm')}" ${isDisabled ? 'disabled' : ''}>
+        <label class="visually-hidden" for="event-start-time-${id}">From</label>
+        <input class="event__input  event__input--time" id="event-start-time-${id}" type="text"
+          name="event-start-time" value="${dateFromFormatted}" ${isDisabled ? 'disabled' : ''}>
         &mdash;
-        <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text"
-          name="event-end-time" value="${dayjs(dateTo).format('DD/MM/YY HH:mm')}" ${isDisabled ? 'disabled' : ''}>
+        <label class="visually-hidden" for="event-end-time-${id}">To</label>
+        <input class="event__input  event__input--time" id="event-end-time-${id}" type="text"
+          name="event-end-time" value="${dateToFormatted}" ${isDisabled ? 'disabled' : ''}>
       </div>
 
       <div class="event__field-group  event__field-group--price">
-        <label class="event__label" for="event-price-1">
+        <label class="event__label" for="event-price-${id}">
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}" ${isDisabled ? 'disabled' : ''}>
+        <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}" ${isDisabled ? 'disabled' : ''}>
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
