@@ -88,7 +88,7 @@ const createDestinationOptions = (destinations) => (
 );
 // функция для отрисовки всей формы EVENT EDIT
 const createPointEditTemplate = (point, allOffers, allDestinations) => {
-  const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures, isDisabled, isSaving, isDeleting,} = point;
+  const {type, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures, isDisabled, isSaving, isDeleting} = point;
   const destinationList = createDestinationOptions(allDestinations);
   const allOffersForType = allOffers.find((item) => item.type === type).offers;
 
