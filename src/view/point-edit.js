@@ -315,8 +315,8 @@ export default class PointEdit extends SmartView {
     const inputValue = evt.target.value;
     const cityList = this._allDestinations.map((destination) => destination.name);
     const isCityExist = cityList.includes(inputValue);
-    if (inputValue.length <= 0 || isCityExist === false) {
-      evt.target.setCustomValidity('please select a city from the list');
+    if (inputValue.length <= 0 || !isCityExist) {
+      evt.target.setCustomValidity('Please select a city from the list');
     } else {
       evt.target.setCustomValidity('');
       this.updateData(
