@@ -33,13 +33,13 @@ export default class Point {
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
-  init(point, offers, destinations) {
+  init(point, allOffers, AllDestinations) {
     this._point = point;
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._pointEditComponent;
 
-    this._pointComponent = new PointView(point, offers, destinations);
-    this._pointEditComponent = new PointEditView(point, offers, destinations);
+    this._pointComponent = new PointView(point, allOffers, AllDestinations);
+    this._pointEditComponent = new PointEditView(point, allOffers, AllDestinations);
 
     this._pointComponent.setOpenButtonClickHandler(this._handleOpenButtonClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);

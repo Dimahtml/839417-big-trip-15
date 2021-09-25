@@ -209,6 +209,21 @@ export default class PointEdit extends SmartView {
     this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setCloseButtonClickHandler(callback) {
+    this._callback.closeButtonClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeButtonClickHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
+  }
+
   _setDatepicker() {
     if (this._datepickerFrom) {
       // В случае обновления компонента удаляем вспомогательные DOM-элементы,
@@ -358,24 +373,9 @@ export default class PointEdit extends SmartView {
     this._callback.closeButtonClick();
   }
 
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().addEventListener('submit', this._formSubmitHandler);
-  }
-
-  setCloseButtonClickHandler(callback) {
-    this._callback.closeButtonClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeButtonClickHandler);
-  }
-
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
     this._callback.deleteClick(PointEdit.parseDataToPoint(this._data));
-  }
-
-  setDeleteClickHandler(callback) {
-    this._callback.deleteClick = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   static parsePointToData(point, allOffers) {
