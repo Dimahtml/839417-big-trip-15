@@ -1,13 +1,27 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract.js';
-import {generateOffers} from '../mock/offer.js';
 import durationPlugin from 'dayjs/plugin/duration';
 dayjs.extend(durationPlugin);
 
-const createPointOffer = (point = {}) => {
-  const potentialOffers = generateOffers(point.type);
+const getFormattedDuration = (minutes) => {
+  const minutesInHour = 60;
+  const minutesInDay = 1440;
+  let diffFormatted = '';
+  if (minutes < minutesInHour) {
+    diffFormatted = dayjs.duration(minutes, 'minutes').format('mm[M]');
+  } else if (minutes < minutesInDay && minutes >= minutesInHour) {
+    diffFormatted = dayjs.duration(minutes, 'minutes').format('HH[H] mm[M]');
+  } else if (minutes >= minutesInDay) {
+    diffFormatted = dayjs.duration(minutes, 'minutes').format('DD[D] HH[H] mm[M]');
+  }
 
-  return potentialOffers.offers.map((offer) =>
+  return diffFormatted;
+};
+
+const createPointOffer = (point = {}) => {
+  const checkedOffers = point.offers;
+
+  return checkedOffers.map((offer) =>
     `<li class="event__offer">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
@@ -16,7 +30,7 @@ const createPointOffer = (point = {}) => {
 };
 
 const createPointFavoriteIcon = (isFavorite = false) => (
-  `<button class="event__favorite-btn ${isFavorite === true ? 'event__favorite-btn--active' : ''}" type="button">
+  `<button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
     <span class="visually-hidden">Add to favorite</span>
     <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
       <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
@@ -29,8 +43,8 @@ const createPointTemplate = (point) => {
   const month = dayjs(dateFrom).format('MMM DD');
   const startTime = dayjs(dateFrom).format('HH:mm');
   const endTime = dayjs(dateTo).format('HH:mm');
-  let diff = dayjs(dateTo).diff(dateFrom, 'minute');
-  diff = dayjs.duration(diff, 'minutes').format('H[h] mm[m]');
+  const diff = dayjs(dateTo).diff(dateFrom, 'minute');
+  const durationFormatted = getFormattedDuration(diff);
 
   return `<li class="trip-events__item">
     <div class="event">
@@ -45,7 +59,7 @@ const createPointTemplate = (point) => {
           &mdash;
           <time class="event__end-time" datetime="${dayjs(dateTo).format('YYYY-MM-DDTHH:mm')}">${endTime}</time>
         </p>
-        <p class="event__duration">${diff}</p>
+        <p class="event__duration">${durationFormatted}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
@@ -63,9 +77,10 @@ const createPointTemplate = (point) => {
 };
 
 export default class Point extends AbstractView {
-  constructor(point) {
+  constructor(point, offers) {
     super();
     this._point = point;
+    this._potentialOffers = offers;
 
     this._openButtonClickHandler = this._openButtonClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
@@ -73,16 +88,6 @@ export default class Point extends AbstractView {
 
   getTemplate() {
     return createPointTemplate(this._point);
-  }
-
-  _favoriteClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.favoriteClick();
-  }
-
-  _openButtonClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.openButtonClick();
   }
 
   setOpenButtonClickHandler(callback) {
@@ -93,5 +98,15 @@ export default class Point extends AbstractView {
   setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector('.event__favorite-btn').addEventListener('click', this._favoriteClickHandler);
+  }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  _openButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.openButtonClick();
   }
 }
