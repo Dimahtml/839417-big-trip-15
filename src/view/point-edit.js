@@ -239,8 +239,7 @@ export default class PointEdit extends SmartView {
     this._datepickerFrom = flatpickr(
       this.getElement().querySelector('input[name="event-start-time"]'),
       {
-        // eslint-disable-next-line camelcase
-        time_24hr: true,
+        'time_24hr': true,
         enableTime: true,
         dateFormat: 'd/m/y H:i',
         defaultDate: this._data.dateFrom,
@@ -252,8 +251,7 @@ export default class PointEdit extends SmartView {
     this._datepickerTo = flatpickr(
       this.getElement().querySelector('input[name="event-end-time"]'),
       {
-        // eslint-disable-next-line camelcase
-        time_24hr: true,
+        'time_24hr': true,
         enableTime: true,
         dateFormat: 'd/m/y H:i',
         defaultDate: this._data.dateTo,
@@ -337,13 +335,13 @@ export default class PointEdit extends SmartView {
   _dateFromChangeHandler([dateFrom]) {
     this.updateData({
       dateFrom: dateFrom,
-    });
+    }, true);
   }
 
   _dateToChangeHandler([dateTo]) {
     this.updateData({
       dateTo: dateTo,
-    });
+    }, true);
   }
 
   _basePriceChangeHandler(evt) {
