@@ -315,13 +315,14 @@ export default class PointEdit extends SmartView {
     const inputValue = evt.target.value;
     const cityList = this._allDestinations.map((destination) => destination.name);
     const isCityExist = cityList.includes(inputValue);
-
     if (inputValue.length <= 0 || isCityExist === false) {
       evt.target.setCustomValidity('please select a city from the list');
     } else {
       evt.target.setCustomValidity('');
       this.updateData(
-        {isPictures: this._allDestinations.find((destination) => destination.name === inputValue).pictures.length > 0,
+        {
+          isPictures: this._allDestinations.find((destination) => destination.name === inputValue).pictures.length > 0,
+          isDestination: this._allDestinations.find((destination) => destination.name === inputValue).description !== '',
           destination: {
             description: this._allDestinations.find((destination) => destination.name === inputValue).description,
             name: inputValue,
@@ -385,7 +386,7 @@ export default class PointEdit extends SmartView {
       point,
       {
         isOffers: potentialOffers.length > 0,
-        isDestination: point.destination !== null,
+        isDestination: point.destination.name !== '',
         isPictures: point.destination.pictures.length > 0,
         isDisabled: false,
         isSaving: false,

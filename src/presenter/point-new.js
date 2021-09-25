@@ -33,11 +33,12 @@ export default class PointNew {
   }
 
   init(offers, destinations) {
+    const isNewPoint = true;
     if (this._pointEditComponent !== null) {
       return;
     }
 
-    this._pointEditComponent = new PointEditView(this._point, offers, destinations);
+    this._pointEditComponent = new PointEditView(this._point, offers, destinations, isNewPoint);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._pointEditComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
