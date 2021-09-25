@@ -304,9 +304,9 @@ export default class PointEdit extends SmartView {
   _typeToggleHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      isOffers: true,
+      isOffers: this._allOffers.find((item) => item.type === evt.target.value).offers.length > 0,
       type: evt.target.value,
-      offers: this._allOffers.find((item) => item.type === evt.target.value).offers,
+      offers: [],
     });
   }
 
