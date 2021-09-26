@@ -86,7 +86,6 @@ const createTextDeleteButton = (isNewPoint, isDeleting) => {
 // функция для отрисовки всей формы EVENT EDIT
 const createPointEditTemplate = (point, allOffers, allDestinations, isNewPoint) => {
   const {type, id, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures, isDisabled, isSaving, isDeleting} = point;
-  // console.log(this._isNewPoint);
   const destinationList = createDestinationOptions(allDestinations);
   const allOffersForType = allOffers.find((item) => item.type === type).offers;
   const dateFromFormatted = dayjs(dateFrom).format('DD/MM/YY HH:mm');
