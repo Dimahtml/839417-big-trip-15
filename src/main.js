@@ -13,18 +13,21 @@ import Api from './api.js';
 const AUTHORIZATION = 'Basic qwerjfaskdlfftiye';
 const END_POINT = 'https://15.ecmascript.pages.academy/big-trip';
 
-const pointsModel = new PointsModel();
-const filterModel = new FilterModel();
-const offersModel = new OffersModel();
-const destinationsModel = new DestinationModel();
-
 const pageMainContainerElement = document.querySelector('.page-body__page-main').querySelector('.page-body__container');
 
 const siteMenuElement = document.querySelector('.trip-controls__navigation');
 const siteFilterElement = document.querySelector('.trip-controls__filters');
 const tripEventsElement = document.querySelector('.trip-events');
 const addNewPointElement = document.querySelector('.trip-main__event-add-btn');
+
+addNewPointElement.disabled = true;
+
 const siteMenuComponent = new SiteMenuView();
+
+const pointsModel = new PointsModel();
+const filterModel = new FilterModel();
+const offersModel = new OffersModel();
+const destinationsModel = new DestinationModel();
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
@@ -41,6 +44,7 @@ const handleSiteMenuClick = (menuItem) => {
       tripPresenter.destroy();
       tripPresenter.init();
       remove(statisticsComponent);
+      addNewPointElement.disabled = false;
       break;
     }
     case MenuItem.STATS: {
@@ -49,6 +53,7 @@ const handleSiteMenuClick = (menuItem) => {
       tripPresenter.destroy();
       statisticsComponent = new StatisticsView(pointsModel.getPoints());
       render(pageMainContainerElement, statisticsComponent, RenderPosition.BEFOREEND);
+      addNewPointElement.disabled = true;
       break;
     }
   }
@@ -56,6 +61,7 @@ const handleSiteMenuClick = (menuItem) => {
 
 addNewPointElement.addEventListener('click', (evt) => {
   evt.preventDefault();
+  addNewPointElement.disabled = true;
   tripPresenter.createPoint();
 });
 
@@ -69,6 +75,7 @@ Promise.all([
 ])
   .then((data) => {
     const [destinations, offers, points] = data;
+    addNewPointElement.disabled = false;
     destinationsModel.setDestinations(UpdateType.INIT, destinations);
     offersModel.setOffers(UpdateType.INIT, offers);
     pointsModel.setPoints(UpdateType.INIT, points);
