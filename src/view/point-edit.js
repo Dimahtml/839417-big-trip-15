@@ -1,23 +1,9 @@
 import dayjs from 'dayjs';
 import SmartView from './smart.js';
 import flatpickr from 'flatpickr';
+import {BLANK_POINT} from '../const.js';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
-
-const BLANK_POINT = {
-  basePrice: 0,
-  dateFrom: Date.now(),
-  dateTo: Date.now(),
-  destination:
-    {
-      description: '',
-      name: '',
-      pictures: [],
-    },
-  isFavorite: false,
-  offers: [],
-  type: 'taxi',
-};
 
 // Две функции для отрисовки блока OFFERS
 const createEventOfferSelector = (point, allOffersForType, isDisabled) => {
@@ -116,7 +102,7 @@ const createPointEditTemplate = (point, allOffers, allDestinations) => {
           ${type}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text"
-          name="event-destination" value="${destination.name}" list="destination-list-1" ${isDisabled ? 'disabled' : ''}>
+          name="event-destination" value="${destination.name}" list="destination-list-1" required ${isDisabled ? 'disabled' : ''}>
         <datalist id="destination-list-1" required>
           ${destinationList}
         </datalist>
@@ -137,7 +123,8 @@ const createPointEditTemplate = (point, allOffers, allDestinations) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${basePrice}" ${isDisabled ? 'disabled' : ''}>
+        <input class="event__input  event__input--price" id="event-price-${id}" type="number"
+          name="event-price" value="${basePrice}" ${isDisabled ? 'disabled' : ''}>
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
@@ -225,17 +212,6 @@ export default class PointEdit extends SmartView {
   }
 
   _setDatepicker() {
-    if (this._datepickerFrom) {
-      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
-      // которые создает flatpickr при инициализации
-      this._datepickerFrom.destroy();
-      this._datepickerFrom = null;
-    }
-
-    if (this._datepickerTo) {
-      this._datepickerTo.destroy();
-      this._datepickerTo = null;
-    }
     this._datepickerFrom = flatpickr(
       this.getElement().querySelector('input[name="event-start-time"]'),
       {
@@ -259,6 +235,18 @@ export default class PointEdit extends SmartView {
         onChange: this._dateToChangeHandler,
       },
     );
+  }
+
+  _dateFromChangeHandler([dateFrom]) {
+    this.updateData({
+      dateFrom: dateFrom,
+    });
+  }
+
+  _dateToChangeHandler([dateTo]) {
+    this.updateData({
+      dateTo: dateTo,
+    });
   }
 
   _setInnerHandlers() {
@@ -330,18 +318,6 @@ export default class PointEdit extends SmartView {
       );
     }
     evt.target.reportValidity();
-  }
-
-  _dateFromChangeHandler([dateFrom]) {
-    this.updateData({
-      dateFrom: dateFrom,
-    }, true);
-  }
-
-  _dateToChangeHandler([dateTo]) {
-    this.updateData({
-      dateTo: dateTo,
-    }, true);
   }
 
   _basePriceChangeHandler(evt) {

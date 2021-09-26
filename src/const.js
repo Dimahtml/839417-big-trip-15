@@ -29,3 +29,18 @@ export const MenuItem = {
   TABLE: 'site-menu-table',
   STATS: 'site-menu-stats',
 };
+
+export const BLANK_POINT = {
+  basePrice: 1,
+  dateFrom: new Date(),
+  dateTo: new Date(),
+  destination:
+    {
+      description: '',
+      name: '',
+      pictures: [],
+    },
+  isFavorite: false,
+  offers: [],
+  type: 'taxi',
+};

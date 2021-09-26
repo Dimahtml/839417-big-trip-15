@@ -1,21 +1,6 @@
 import PointEditView from '../view/point-edit.js';
 import {remove, render, RenderPosition} from '../utils/render.js';
-import {UserAction, UpdateType} from '../const.js';
-
-const BLANK_POINT = {
-  basePrice: 0,
-  dateFrom: Date.now(),
-  dateTo: Date.now(),
-  destination:
-    {
-      description: '',
-      name: '',
-      pictures: [],
-    },
-  isFavorite: false,
-  offers: [],
-  type: 'taxi',
-};
+import {UserAction, UpdateType, BLANK_POINT} from '../const.js';
 
 export default class PointNew {
   constructor(pointListContainer, changeData) {
