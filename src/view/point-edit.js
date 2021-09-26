@@ -72,13 +72,26 @@ const createEventSectionDestination = (point, isPictures) => (
 const createDestinationOptions = (destinations) => (
   destinations.map((destination) =>`<option value="${destination.name}"></option>`).join('')
 );
+// функция для создания текста на кнопке закрытия
+const createTextDeleteButton = (isNewPoint, isDeleting) => {
+  let text = 'Delete';
+  if (isNewPoint) {
+    text = 'Cancel';
+  }
+  if (isDeleting) {
+    text = 'Deleting...';
+  }
+  return text;
+};
 // функция для отрисовки всей формы EVENT EDIT
-const createPointEditTemplate = (point, allOffers, allDestinations) => {
+const createPointEditTemplate = (point, allOffers, allDestinations, isNewPoint) => {
   const {type, id, destination, dateFrom, dateTo, basePrice, isOffers, isDestination, isPictures, isDisabled, isSaving, isDeleting} = point;
+  // console.log(this._isNewPoint);
   const destinationList = createDestinationOptions(allDestinations);
   const allOffersForType = allOffers.find((item) => item.type === type).offers;
   const dateFromFormatted = dayjs(dateFrom).format('DD/MM/YY HH:mm');
   const dateToFormatted = dayjs(dateTo).format('DD/MM/YY HH:mm');
+  const textDeleteButton = createTextDeleteButton(isNewPoint, isDeleting);
 
   return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -131,7 +144,7 @@ const createPointEditTemplate = (point, allOffers, allDestinations) => {
         ${isSaving ? 'Saving...' : 'Save'}
       </button>
       <button class="event__reset-btn" type="reset">
-        ${isDeleting ? 'Deleting...' : 'Delete'}
+        ${textDeleteButton}
       </button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
@@ -145,11 +158,13 @@ const createPointEditTemplate = (point, allOffers, allDestinations) => {
 };
 
 export default class PointEdit extends SmartView {
-  constructor(point = BLANK_POINT, allOffers, allDestinations) {
+  constructor(point = BLANK_POINT, allOffers, allDestinations, isNewPoint = false) {
     super();
     this._point = point;
     this._allOffers = allOffers;
     this._allDestinations = allDestinations;
+      console.log(isNewPoint);
+    this._isNewPoint = isNewPoint;
     this._data = PointEdit.parsePointToData(point, allOffers);
     this._datepicker = null;
 
@@ -185,7 +200,7 @@ export default class PointEdit extends SmartView {
   }
 
   getTemplate() {
-    return createPointEditTemplate(this._data, this._allOffers, this._allDestinations);
+    return createPointEditTemplate(this._data, this._allOffers, this._allDestinations, this._isNewPoint);
   }
 
   restoreHandlers() {

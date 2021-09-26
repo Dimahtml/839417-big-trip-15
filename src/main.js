@@ -41,6 +41,7 @@ const handleSiteMenuClick = (menuItem) => {
     case MenuItem.TABLE: {
       siteMenuComponent.getElement().querySelector('#site-menu-table').classList.add('trip-tabs__btn--active');
       siteMenuComponent.getElement().querySelector('#site-menu-stats').classList.remove('trip-tabs__btn--active');
+      document.querySelectorAll('.trip-filters__filter-input').forEach((filter) => filter.disabled = false);
       tripPresenter.destroy();
       tripPresenter.init();
       remove(statisticsComponent);
@@ -48,12 +49,14 @@ const handleSiteMenuClick = (menuItem) => {
       break;
     }
     case MenuItem.STATS: {
+      addNewPointElement.disabled = true;
       siteMenuComponent.getElement().querySelector('#site-menu-stats').classList.add('trip-tabs__btn--active');
       siteMenuComponent.getElement().querySelector('#site-menu-table').classList.remove('trip-tabs__btn--active');
+      document.querySelectorAll('.trip-filters__filter-input').forEach((filter) => filter.disabled = true);
       tripPresenter.destroy();
+
       statisticsComponent = new StatisticsView(pointsModel.getPoints());
       render(pageMainContainerElement, statisticsComponent, RenderPosition.BEFOREEND);
-      addNewPointElement.disabled = true;
       break;
     }
   }
