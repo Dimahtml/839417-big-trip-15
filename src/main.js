@@ -59,10 +59,14 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
+const handlePointNewFormClose = () => {
+  addNewPointElement.disabled = false;
+};
+
 addNewPointElement.addEventListener('click', (evt) => {
   evt.preventDefault();
   addNewPointElement.disabled = true;
-  tripPresenter.createPoint();
+  tripPresenter.createPoint(handlePointNewFormClose);
 });
 
 filterPresenter.init();
