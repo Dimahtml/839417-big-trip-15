@@ -163,7 +163,6 @@ export default class PointEdit extends SmartView {
     this._point = point;
     this._allOffers = allOffers;
     this._allDestinations = allDestinations;
-      console.log(isNewPoint);
     this._isNewPoint = isNewPoint;
     this._data = PointEdit.parsePointToData(point, allOffers);
     this._datepicker = null;
